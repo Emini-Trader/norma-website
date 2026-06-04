@@ -204,6 +204,10 @@
             <input id="f-firma" name="Firma" required placeholder="Selskapsnavn AS">
           </div>
         </div>
+        <div class="field" style="margin-bottom:16px">
+          <label for="f-epost">E-post</label>
+          <input id="f-epost" name="email" required type="email" placeholder="navn@firma.no">
+        </div>
         <div class="form-row">
           <div class="field">
             <label for="f-tlf">Telefon</label>
@@ -233,6 +237,16 @@
           <button type="submit" class="btn btn-primary">Send forespørsel <span class="arr">→</span></button>
         </div>
       </form>
+      <div id="form-success" class="form-success" style="display:none" role="status" aria-live="polite">
+        <span class="fs-ok-corner tl"></span><span class="fs-ok-corner tr"></span>
+        <span class="fs-ok-corner bl"></span><span class="fs-ok-corner br"></span>
+        <div class="fs-ok-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 L10 18.5 L20 6"/></svg>
+        </div>
+        <div class="fs-ok-eyebrow">● Sendt</div>
+        <h3>Takk for din henvendelse!</h3>
+        <p>Vi har mottatt meldingen din og gjør vårt ytterste for å komme tilbake til deg så raskt som overhodet mulig.</p>
+      </div>
       <aside class="contact-info">
         <div class="info-block">
           <div class="lbl">Telefon</div>
@@ -608,11 +622,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const contactForm = document.getElementById("contact-form");
   const sentBox = document.getElementById("form-sent");
-  const showStatus = (msg, ok) => {
+  const successPanel = document.getElementById("form-success");
+  const showError = msg => {
     sentBox.textContent = msg;
-    sentBox.style.borderColor = ok ? "rgba(244,187,41,0.3)" : "rgba(255,120,90,0.45)";
-    sentBox.style.color = ok ? "var(--yellow)" : "#ff8a6a";
-    sentBox.style.background = ok ? "rgba(244,187,41,0.08)" : "rgba(255,120,90,0.08)";
+    sentBox.style.borderColor = "rgba(255,120,90,0.45)";
+    sentBox.style.color = "#ff8a6a";
+    sentBox.style.background = "rgba(255,120,90,0.08)";
     sentBox.style.display = "";
   };
   contactForm.addEventListener("submit", async e => {
@@ -621,6 +636,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const original = btn.innerHTML;
     btn.disabled = true;
     btn.textContent = "Sender …";
+    sentBox.style.display = "none";
     try {
       const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
@@ -629,14 +645,15 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok && data.success) {
-        showStatus("● Takk! Vi tar kontakt innen 24 timer. — Norma", true);
         contactForm.reset();
+        contactForm.style.display = "none";
+        successPanel.style.display = "";
+        successPanel.scrollIntoView({ behavior: "smooth", block: "center" });
       } else {
         throw new Error(data.message || "submit_failed");
       }
     } catch (err) {
-      showStatus("● Noe gikk galt. Ring oss på +47 99 07 40 40 eller send e-post til post@norma-gs.no.", false);
-    } finally {
+      showError("● Noe gikk galt. Ring oss på +47 99 07 40 40 eller send e-post til post@norma-gs.no.");
       btn.disabled = false;
       btn.innerHTML = original;
       setTimeout(() => { sentBox.style.display = "none"; }, 8000);
