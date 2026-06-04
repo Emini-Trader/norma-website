@@ -1,40 +1,670 @@
 <!doctype html>
 <html lang="no">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Norma Geosystems — Landmåling for entreprenører</title>
-  <meta name="description" content="Norma Geosystems leverer presis landmåling, 3D-skanning og BIM-integrasjon for entreprenører og utbyggere i Norge. ±5mm nøyaktighet, leveranse på 48 timer." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+  <meta name="description" content="Norma Geosystems leverer presis landmåling, 3D-skanning og BIM-integrasjon for entreprenører og utbyggere i Norge. ±5mm nøyaktighet, leveranse på 48 timer.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div id="root"></div>
 
-  <template id="__bundler_thumbnail">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
-      <rect width="400" height="400" fill="#383E42"/>
-      <g transform="translate(120 120)">
-        <rect x="0" y="0" width="160" height="100" fill="#383E42" stroke="#F4BB29" stroke-width="4"/>
-        <path d="M10 90 L80 10 L80 90 L150 10" fill="none" stroke="#F4BB29" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/>
-      </g>
-      <text x="200" y="290" text-anchor="middle" fill="#F4BB29" font-family="monospace" font-size="20" letter-spacing="4">NORMA</text>
-      <text x="200" y="316" text-anchor="middle" fill="rgba(255,255,255,0.55)" font-family="monospace" font-size="11" letter-spacing="3">GEOSYSTEMS</text>
-    </svg>
-  </template>
+<nav class="nav">
+  <div class="wrap nav-row">
+    <a href="#top" class="nav-logo">
+      <img src="assets/norma-logo.png" alt="Norma Geosystems">
+    </a>
+    <div class="nav-links">
+      <a href="#tjenester">Tjenester</a>
+      <a href="#prosjekter">Prosjekter</a>
+      <a href="#prosess">Slik jobber vi</a>
+      <a href="#utstyr">Utstyr</a>
+      <a href="#kontakt">Kontakt</a>
+    </div>
+    <a href="#kontakt" class="nav-cta">Be om tilbud</a>
+  </div>
+</nav>
 
-  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<header id="top" class="hero">
+  <div class="hero-topo"></div>
+  <div class="hero-corner"></div>
+  <div class="wrap hero-inner">
+    <div>
+      <span class="badge">For entreprenører og utbyggere</span>
+      <h1>NÅR <span class="accent">PRESISJON</span> TELLER</h1>
+      <p class="hero-sub">Vi leverer presis stikning, innmåling og 3D-modellgrunnlag til norske byggeprosjekter. Riktig grunnlag fra første dag — uten omveier, uten kreativ tolkning.</p>
+      <div class="hero-ctas">
+        <a href="#prosjekter" class="btn btn-primary">Se prosjekter <span class="arr">→</span></a>
+        <a href="#kontakt" class="btn btn-ghost-dark">Ta kontakt</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="num">±5<span style="font-size:22px;margin-left:4px">mm</span></div>
+          <div class="lbl">Nøyaktighet</div>
+        </div>
+        <div class="stat">
+          <div class="num">xx+</div>
+          <div class="lbl">FORNØYE KUNDER</div>
+        </div>
+        <div class="stat">
+          <div class="num">xx+</div>
+          <div class="lbl">Prosjekter</div>
+        </div>
+      </div>
+    </div>
+    <div class="feltstasjon">
+      <span class="fs-corner tl"></span><span class="fs-corner tr"></span>
+      <span class="fs-corner bl"></span><span class="fs-corner br"></span>
+      <div class="fs-head">
+        <span class="ttl">Feltstasjon · Gjønnes</span>
+        <span class="live"><span class="dot"></span>LIVE</span>
+      </div>
+      <div class="fs-row"><span class="k">ØST (E)</span><span class="v" id="fs-east">589 142.32</span><span class="u">m</span></div>
+      <div class="fs-row"><span class="k">NORD (N)</span><span class="v" id="fs-north">6 644 873</span><span class="u">m</span></div>
+      <div class="fs-row"><span class="k">HØYDE</span><span class="v">96.412</span><span class="u">m / NN2000</span></div>
+      <div class="fs-row"><span class="k">SONE</span><span class="v">UTM 32</span><span class="u">EUREF89</span></div>
+      <div class="fs-row"><span class="k">RTK FIX</span><span class="v" style="color:#F4BB29">● FIXED</span><span class="u">int.amb.</span></div>
+      <div class="fs-row"><span class="k">HDOP</span><span class="v" id="fs-hdop">0.62</span><span class="u">σ</span></div>
+      <div class="fs-row"><span class="k">DRIFT</span><span class="v" id="fs-drift">+0.0</span><span class="u">mm / 10min</span></div>
+      <div class="fs-row"><span class="k">SAT</span><span class="v">22 / 31</span><span class="u">GPS+GAL+GLO</span></div>
+      <div class="fs-foot">
+        <span id="fs-time">00:00:00 · OBS 014</span>
+        <span class="fs-bar">SIGNAL<span class="bars"><i></i><i></i><i></i><i></i></span></span>
+      </div>
+    </div>
+  </div>
+</header>
 
-  <script type="text/babel" src="data.jsx"></script>
-  <script type="text/babel" src="norway-path.jsx"></script>
-  <script type="text/babel" src="icons.jsx"></script>
-  <script type="text/babel" src="sections-top.jsx"></script>
-  <script type="text/babel" src="sections-mid.jsx"></script>
-  <script type="text/babel" src="sections-bottom.jsx"></script>
-  <script type="text/babel" src="app.jsx"></script>
+<section class="logobar">
+  <div class="wrap">
+    <div class="logobar-label">Vi har jobbet med</div>
+  </div>
+  <div class="marquee">
+    <div class="marquee-track" id="marquee-track"></div>
+  </div>
+</section>
+
+<section id="tjenester" class="section">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <div>
+        <div class="eyebrow">Tjenester</div>
+        <h2 class="sec-title"><span class="accent">8</span> leveranser som dekker hele byggeprosessen.</h2>
+      </div>
+      <p class="sec-lede">Fra første stikk til ferdig dokumentasjon.
+        <a class="lede-link" href="tjenester.html">Les mer om våre kompetanser <span class="arr">→</span></a>
+      </p>
+    </div>
+    <div class="svc-grid" id="svc-grid"></div>
+  </div>
+</section>
+
+<section id="prosjekter" class="section dark">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <div>
+        <div class="eyebrow">Prosjekter</div>
+        <h2 class="sec-title"><span class="accent">xx+</span> oppdrag. Vest, sør og helt nord.</h2>
+      </div>
+      <p class="sec-lede">Klikk en pinne på kartet eller bla i listen. Alle koordinater oppgis i UTM 32 / EUREF89.</p>
+    </div>
+    <div class="proj-wrap">
+      <div class="map-card">
+        <div class="map-head">
+          <span>NORGE · EUREF89 / UTM 32</span>
+          <span class="coord" id="map-coord">—</span>
+        </div>
+        <div class="map-svg-wrap">
+          <svg class="map-overlay" id="norway-svg" viewBox="-3 -3 106 130.02" preserveAspectRatio="xMidYMid meet"></svg>
+        </div>
+      </div>
+      <div>
+        <div class="proj-controls" id="proj-controls"></div>
+        <div class="proj-list" id="proj-list"></div>
+        <div class="proj-detail" id="proj-detail" style="display:none">
+          <h5>Oppdraget</h5>
+          <p id="proj-detail-text"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="prosess" class="section">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <div>
+        <div class="eyebrow">Slik jobber vi</div>
+        <h2 class="sec-title">Fire steg. <span class="accent">Ingen</span> overraskelser.</h2>
+      </div>
+      <p class="sec-lede">Hver fase har en konkret leveranse. Du vet alltid hvor i prosessen vi er og hva som kommer ut i andre enden.</p>
+    </div>
+    <div class="process-grid" id="process-grid"></div>
+  </div>
+</section>
+
+<section id="utstyr" class="section gray">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <div>
+        <div class="eyebrow">Utstyr &amp; sertifisering</div>
+        <h2 class="sec-title">Profesjonelt utstyr, <span class="accent">rektifisert</span> jevnlig.</h2>
+      </div>
+      <p class="sec-lede">Vi investerer i instrumenter som tåler norsk terreng og norsk vær. Alle våre Trimble og Leica enheter rektifiseres minst én gang i året.</p>
+    </div>
+    <div class="equip-wrap">
+      <div class="equip-list" id="equip-list"></div>
+      <div class="cert-card">
+        <h4>Sertifisering &amp; godkjenning</h4>
+        <ul class="cert-list" id="cert-list"></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="kontakt" class="section contact">
+  <div class="wrap">
+    <div class="sec-head fade-in">
+      <div>
+        <div class="eyebrow">Kontakt</div>
+        <h2 class="sec-title">Har du et prosjekt? <span class="accent">Ring oss.</span></h2>
+      </div>
+      <p class="sec-lede">Vi svarer raskest på telefon. Du kan også sende noen linjer her — vi ringer deg tilbake innen samme arbeidsdag.</p>
+    </div>
+    <div class="contact-wrap">
+      <form id="contact-form">
+        <div id="form-sent" class="form-sent" style="display:none">● Takk! Vi tar kontakt innen 24 timer. — Norma</div>
+        <div class="form-row">
+          <div class="field">
+            <label for="f-navn">Navn</label>
+            <input id="f-navn" required placeholder="Fornavn Etternavn">
+          </div>
+          <div class="field">
+            <label for="f-firma">Firma</label>
+            <input id="f-firma" required placeholder="Selskapsnavn AS">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label for="f-tlf">Telefon</label>
+            <input id="f-tlf" required type="tel" placeholder="+47 000 00 000">
+          </div>
+          <div class="field">
+            <label for="f-type">Prosjekttype</label>
+            <select id="f-type">
+              <option>Bygg</option>
+              <option>Vei / anlegg</option>
+              <option>Industri</option>
+              <option>Tomt / eiendom</option>
+              <option>3D-skanning</option>
+              <option>Annet</option>
+            </select>
+          </div>
+        </div>
+        <div class="field" style="margin-bottom:24px">
+          <label for="f-msg">Melding</label>
+          <textarea id="f-msg" placeholder="Kort om prosjektet — sted, omfang, ønsket leveranse..."></textarea>
+        </div>
+        <div class="form-foot">
+          <p class="consent">Ved å sende godtar du at vi lagrer kontaktinfoen din inntil saken er avsluttet. Vi deler aldri data med tredjepart.</p>
+          <button type="submit" class="btn btn-primary">Send forespørsel <span class="arr">→</span></button>
+        </div>
+      </form>
+      <aside class="contact-info">
+        <div class="info-block">
+          <div class="lbl">Telefon</div>
+          <div class="val"><a href="tel:+4799074040">+47 99 07 40 40</a></div>
+        </div>
+        <div class="info-block">
+          <div class="lbl">E-post</div>
+          <div class="val"><a href="mailto:post@norma-gs.no">post@norma-gs.no</a></div>
+        </div>
+        <div class="info-block">
+          <div class="lbl">Besøksadresse</div>
+          <div class="val">Forseths veg 6<br>3520 Jevnaker</div>
+        </div>
+        <div class="info-block">
+          <div class="lbl">Org.nr</div>
+          <div class="val mono" style="font-size:16px">NO 825 831 622 MVA</div>
+        </div>
+        <div class="minimap" aria-hidden="true">
+          <div class="minimap-grid"></div>
+          <div class="minimap-pin">
+            <span class="dot"></span>
+            <span>JEVNAKER · E 576 820 N 6 685 240</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-logo">
+        <img src="assets/norma-logo-light.png" alt="Norma Geosystems">
+        <p class="foot-tag">Landmåling og geomatikk for norske entreprenører. Oslo · siden 2008.</p>
+      </div>
+      <div class="foot-col">
+        <h5>Tjenester</h5>
+        <ul id="foot-services"></ul>
+      </div>
+      <div class="foot-col">
+        <h5>Selskap</h5>
+        <ul>
+          <li><a href="#prosjekter">Prosjekter</a></li>
+          <li><a href="#prosess">Slik jobber vi</a></li>
+          <li><a href="#utstyr">Utstyr</a></li>
+          <li><a href="#kontakt">Kontakt</a></li>
+          <li><a href="https://www.linkedin.com/company/norma-geosystems/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h5>Juridisk</h5>
+        <ul>
+          <li><a href="juridisk/personvern.html">Personvernerklæring</a></li>
+          <li><a href="juridisk/informasjonskapsler.html">Informasjonskapsler</a></li>
+          <li><a href="juridisk/vilkar.html">Vilkår</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 NORMA GEOSYSTEMS AS · NO 825 831 622 MVA</span>
+      <span>POST@NORMA-GS.NO · +47 99 07 40 40</span>
+    </div>
+  </div>
+</footer>
+
+<div class="cookie" id="cookie-banner" style="display:none" role="dialog" aria-label="Cookie notice">
+  <div class="ck-head">● Informasjonskapsler</div>
+  <p style="margin:0">Vi bruker nødvendige cookies for at nettstedet skal fungere. Statistikk samles kun anonymt og kun hvis du sier ja. Du kan endre valget når som helst.</p>
+  <div class="ck-actions">
+    <button class="ck-btn primary" id="ck-all">Godta alle</button>
+    <button class="ck-btn ghost" id="ck-necessary">Kun nødvendige</button>
+  </div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+
+const NORWAY_D = "M90.34 0.56 L93.56 3.15 L99.09 9.94 L93.91 17.51 L92.72 17.72 L91.25 15.41 L86.41 11.41 L80.11 26.12 L73.88 25.70 L69.47 23.39 L63.59 26.19 L59.31 31.09 L47.55 50.84 L43.98 62.11 L45.38 68.35 L42.37 70.31 L37.82 70.24 L35.36 85.29 L35.36 89.22 L37.89 92.86 L37.75 101.26 L33.33 113.73 L32.49 114.36 L28.71 114.36 L24.65 113.38 L13.66 122.97 L8.26 122.69 L0.84 114.99 L1.54 113.31 L1.26 96.29 L3.36 92.02 L2.87 87.04 L4.83 84.80 L5.11 82.00 L13.87 76.05 L19.89 73.88 L24.30 73.39 L26.68 67.51 L34.24 61.27 L35.08 55.81 L38.87 45.31 L47.62 36.41 L49.16 32.42 L40.13 35.92 L38.59 35.92 L38.38 35.01 L55.25 15.41 L57.14 13.94 L65.06 11.62 L74.37 5.67 L76.82 2.66 Z";
+
+const SERVICES = [
+  { n:"01", slug:"bygg-anlegg",   icon:"road",    name:"Bygg og anlegg",  slogan:["Riktig plass","i hvert stikk"],           desc:"Utstikking og innmåling for bygg og anlegg, slik at hvert punkt havner presist der det skal." },
+  { n:"02", slug:"grunnlagsnett", icon:"net",     name:"Grunnlagsnett",   slogan:["Nøyaktig fra","første til siste punkt"],  desc:"Etablering og kontroll av grunnlagsnett, knyttet opp mot det offisielle landsnettet." },
+  { n:"03", slug:"terrengmodell", icon:"contour", name:"Terrengmodell",   slogan:["Vi former","terrenget digitalt"],         desc:"Digital terrengmodeller for prosjektering, masseberegning og internkontroll." },
+  { n:"04", slug:"spormaling",    icon:"rail",    name:"Spormåling",      slogan:["Med presisjon","på rett spor"],          desc:"Innmåling og kontroll av jernbanespor med beliggenhet helt ned til millimeternivå." },
+  { n:"05", slug:"laserskanning", icon:"laser",   name:"Laserskanning",   slogan:["Se alt","fanget i 3D"],                  desc:"Laserskanning og fotogrammetri som fanger hele anlegget som en målbar 3D-modell." },
+  { n:"06", slug:"malebrev",      icon:"doc",     name:"Målebrev",        slogan:["Du tjener mens","vi beregner"],          desc:"Komplette sluttdokumentasjon, ferdig bearbeidet og klart for innsending og rapportering." },
+  { n:"07", slug:"setningsmaling",icon:"settle",  name:"Setningsmåling",  slogan:["Vi ser det","før det skjer"],            desc:"Periodisk monitorering av setninger som varsler bevegelse før den blir et problem." },
+  { n:"08", slug:"batymetri",     icon:"boat",    name:"Batymetri",       slogan:["Vi kartlegger","det usynlige"],          desc:"Oppmåling av sjøbunn, havn og vassdrag med ekkolodd og presis GNSS-posisjonering." },
+];
+
+const CLIENTS = [
+  { name:"AF Gruppen",           slug:"af-gruppen",       url:"https://afgruppen.no" },
+  { name:"Veidekke",             slug:"veidekke",         url:"https://veidekke.no" },
+  { name:"Skanska",              slug:"skanska",          url:"https://www.skanska.no" },
+  { name:"NCC",                  slug:"ncc",              url:"https://www.ncc.no" },
+  { name:"Peab",                 slug:"peab",             url:"https://peab.no" },
+  { name:"Implenia Norge",       slug:"implenia",         url:"https://implenia.com" },
+  { name:"Mesta",                slug:"mesta",            url:"https://mesta.no" },
+  { name:"OHLA Norge",           slug:"ohla",             url:"https://ohla-group.com" },
+  { name:"Isachsen Anlegg",      slug:"isachsen",         url:"https://isachsen.no" },
+  { name:"LNS",                  slug:"lns",              url:"https://www.lns.no" },
+  { name:"HAB Construction",     slug:"hab",              url:"https://www.hab.no" },
+  { name:"Marthinsen & Duvholt", slug:"marthinsen-duvholt",url:"https://www.md.no" },
+  { name:"Anlegg Øst Entreprenør",slug:"anlegg-ost",      url:"https://anleggost.no" },
+  { name:"Vassbakk & Støl",      slug:"vassbakk-stol",   url:"https://www.vsas.no" },
+];
+
+const PROJECTS = [
+  { id:"p01", title:"Sentrumskvartalet K3", region:"Bergen",          year:"2025", cat:"Bygg",    desc:"Utstikking og as-built for kontorbygg på 14 200 m². Daglig kontrollmåling av søyleposisjoner mot BIM-modell.",          E:"297 640", N:"6 700 510", pos:{x:9,  y:99}  },
+  { id:"p02", title:"Fv. 60 Stordal–Volda", region:"Møre og Romsdal",year:"2025", cat:"Vei",     desc:"Stikning av veitrasé over 6,2 km med tre tunnelpåhugg. Levert KOF-filer til entreprenørens maskinstyring.",            E:"366 210", N:"6 900 080", pos:{x:16, y:83}  },
+  { id:"p03", title:"Hamn Industripark",    region:"Tromsø",          year:"2024", cat:"Industri",desc:"Volumberegning av massedeponi og kvartalsvis dronefotogrammetri. Terrengmodell levert i LandXML.",                     E:"716 040", N:"7 725 300", pos:{x:57, y:21}  },
+  { id:"p04", title:"Stasjonsbyen",         region:"Lillestrøm",      year:"2024", cat:"Bygg",    desc:"Eiendomsmåling og situasjonsplan for boligfelt med 280 enheter. Innmåling av infrastruktur før overlevering.",          E:"615 420", N:"6 646 110", pos:{x:32, y:105} },
+  { id:"p05", title:"Fv. 714 Hitra–Frøya", region:"Trøndelag",       year:"2024", cat:"Vei",     desc:"Laserskanning av eksisterende vegfundament før reasfaltering. Punktsky integrert mot fagmodell.",                       E:"491 820", N:"7 058 040", pos:{x:33, y:73}  },
+];
+
+const PROCESS = [
+  { n:"01", title:"Befaring",     desc:"Vi gjennomfører befaring på stedet, gjennomgår eksisterende grunnlag og definerer hvilke leveranser prosjektet krever.",                            out:{lbl:"Resultat", val:"Tilbud + plan"} },
+  { n:"02", title:"Måling i felt",desc:"Terreng profilering, utstikking og kontrollmåling utføres med utstyr som oppfyller de høyeste standarder for nøyaktighet.",                       out:{lbl:"Toleranse", val:"±5 mm"} },
+  { n:"03", title:"Bearbeiding",  desc:"Rådata kvalitetssikres og knyttes til prosjektmodellen. All beregning gjennomgår grundig, uavhengig internkontroll.",                             out:{lbl:"Kontroll", val:"Grundig og uavhengig"} },
+  { n:"04", title:"Leveranse",    desc:"Du mottar filene i avtalt format, komplett med måleprotokoll, kontrollpunktslogg og en kortfattet teknisk rapport.",                              out:{lbl:"Format", val:"DWG · IFC · KOF · SOSI"} },
+];
+
+const EQUIPMENT = [
+  { brand:"Trimble", model:"S7",   type:"Totalstasjon",            spec:"Vinkel 1″ · 1 mm + 2 ppm" },
+  { brand:"Trimble", model:"SX12", type:"Skannende totalstasjon",  spec:"1″ · 3D-punkt 2,5 mm @ 100 m" },
+  { brand:"Trimble", model:"R12i", type:"GNSS-mottaker (RTK)",     spec:"RTK 8 mm + 1 ppm · IMU-tilt" },
+  { brand:"Leica",   model:"M60",  type:"Skannende totalstasjon",  spec:"spes. bekreftes" },
+];
+
+const CERTS = [
+  "Sentral godkjenning — tiltaksklasse 2",
+  "StartBank — godkjent leverandør",
+  "Arbeider etter SVV-standard (Statens vegvesen)",
+  "Arbeider etter Bane NOR sine krav",
+];
+
+// ── SVG ICONS ─────────────────────────────────────────────────────────────────
+
+const ICON_PATHS = {
+  road: `<path d="M8 21 L10.5 3"/><path d="M16 21 L13.5 3"/><path d="M12 4.5v2.5"/><path d="M12 10.5v3"/><path d="M12 17v3.5"/>`,
+
+  net: (()=>{
+    const pts={a:[4,8.5],b:[11,4.5],c:[18.5,7],d:[20.5,14.5],e:[14.5,12],f:[8,11],g:[5.5,16.5],h:[13,19.5],i:[19,18.5]};
+    const edges=["a,b","b,c","a,f","b,f","b,e","c,e","c,d","e,d","a,g","f,g","f,e","f,h","g,h","e,h","e,i","d,i","h,i"];
+    return edges.map(e=>{const[p,q]=e.split(",");return`<line x1="${pts[p][0]}" y1="${pts[p][1]}" x2="${pts[q][0]}" y2="${pts[q][1]}"/>`;}).join("")+
+           Object.values(pts).map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.05" fill="currentColor" stroke="none"/>`).join("");
+  })(),
+
+  contour: `<path d="M2.5 14.5 C2 10 6 5.5 11 5 C16.5 4.5 21.5 7.5 21.5 12 C21.5 17 16 20.5 10.5 19.5 C6 18.7 3 17 2.5 14.5 Z"/>
+            <path d="M6 14 C5.7 11 8.3 8.3 11.6 8.1 C15.2 7.9 18.3 9.8 18.2 12.4 C18.1 15.6 14.8 17.6 11.3 16.9 C8.4 16.3 6.2 15.5 6 14 Z"/>
+            <path d="M9.4 13.6 C9.2 11.9 10.7 10.7 12.5 10.8 C14.3 10.9 15.3 12 15 13.4 C14.7 14.9 12.9 15.4 11.4 14.9 C10.3 14.5 9.5 14.3 9.4 13.6 Z"/>
+            <circle cx="12.4" cy="12.7" r="0.5" fill="currentColor" stroke="none"/>`,
+
+  rail: `<path d="M9 3 L9 21"/><path d="M15 3 L15 21"/><path d="M6.5 6.5h11"/><path d="M6.5 11h11"/><path d="M6.5 15.5h11"/><path d="M6.5 20h11"/>`,
+
+  laser: (()=>{
+    const cx=12,cy=12,inner=3.2;
+    let s=`<line x1="1" y1="12" x2="23" y2="12"/>`;
+    for(let a=0;a<360;a+=15){
+      if(a===0||a===180)continue;
+      const outer=a===90||a===270?9.8:a%30===0?8.0:6.2;
+      const rad=a*Math.PI/180;
+      s+=`<line x1="${(cx+inner*Math.cos(rad)).toFixed(2)}" y1="${(cy+inner*Math.sin(rad)).toFixed(2)}" x2="${(cx+outer*Math.cos(rad)).toFixed(2)}" y2="${(cy+outer*Math.sin(rad)).toFixed(2)}"/>`;
+    }
+    return s+`<circle cx="12" cy="12" r="2.1" fill="currentColor" stroke="none"/>`;
+  })(),
+
+  doc: `<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><path d="M9.5 12h6"/><path d="M9.5 15h6"/><path d="M9.5 18h4"/>`,
+
+  settle: `<path d="M3 12 L7.5 8.5 L11.5 14 L15.5 7.5 L21 12.5"/>`+
+          [[3,12],[7.5,8.5],[11.5,14],[15.5,7.5],[21,12.5]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.2" fill="currentColor" stroke="none"/>`).join(""),
+
+  boat: `<path d="M4 13h16l-2.2 4H6.2z"/><path d="M12 13V6"/><circle cx="12" cy="4.8" r="1.2"/><path d="M8.5 20c2 1.6 5 1.6 7 0"/><path d="M10.3 22.4c.9.7 2.5.7 3.4 0"/>`,
+};
+
+function iconSvg(key) {
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${ICON_PATHS[key]}</svg>`;
+}
+
+// ── MAP DATA ──────────────────────────────────────────────────────────────────
+
+const LAT_LINES = [
+  {y:10,l:"70°N"},{y:29,l:"68°N"},{y:48,l:"66°N"},
+  {y:66,l:"64°N"},{y:85,l:"62°N"},{y:104,l:"60°N"},{y:123,l:"58°N"},
+];
+
+const DOT_XS = [];
+for(let x=-2;x<=103;x+=5) DOT_XS.push(x);
+
+const DOT_YS = (()=>{
+  const ys=LAT_LINES.map(d=>d.y), rows=[];
+  for(let i=0;i<ys.length-1;i++){
+    const a=ys[i],b=ys[i+1];
+    for(let k=1;k<=4;k++) rows.push(+(a+(b-a)*k/5).toFixed(2));
+  }
+  const step=(ys[1]-ys[0])/5;
+  for(let y=ys[0]-step;y>-4;y-=step) rows.push(+y.toFixed(2));
+  for(let y=ys[ys.length-1]+step;y<128;y+=step) rows.push(+y.toFixed(2));
+  return rows;
+})();
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+
+let currentFilter = "Alle";
+let activeId = PROJECTS[0].id;
+
+function filtered() {
+  return currentFilter === "Alle" ? PROJECTS : PROJECTS.filter(p => p.cat === currentFilter);
+}
+
+// ── FELTSTASJON LIVE ──────────────────────────────────────────────────────────
+
+let fsT = 0;
+function tickFeltstasjon() {
+  fsT++;
+  const eMm  = Math.round(32 + Math.sin(fsT * 0.9) * 4);
+  const nMm  = Math.round(873 + Math.cos(fsT * 0.6) * 5);
+  const hdop = (0.6 + Math.abs(Math.sin(fsT * 0.5)) * 0.2).toFixed(2);
+  const drift = (Math.sin(fsT * 0.7) * 0.3).toFixed(1);
+  const time  = new Date().toLocaleTimeString("nb-NO",{hour:"2-digit",minute:"2-digit",second:"2-digit"});
+  document.getElementById("fs-east").textContent  = `589 142.${eMm}`;
+  document.getElementById("fs-north").textContent = `6 644 ${nMm}`;
+  document.getElementById("fs-hdop").textContent  = hdop;
+  document.getElementById("fs-drift").textContent = (parseFloat(drift) > 0 ? "+" : "") + drift;
+  document.getElementById("fs-time").textContent  = `${time} · OBS 014`;
+}
+
+// ── NORWAY MAP ────────────────────────────────────────────────────────────────
+
+function buildMap() {
+  const svg = document.getElementById("norway-svg");
+  let h = "";
+
+  // Latitude lines
+  h += `<g class="map-lat">`;
+  LAT_LINES.forEach(({y,l}) => {
+    h += `<g><line x1="-3" y1="${y}" x2="103" y2="${y}"/><text class="lat-label" x="-2" y="${y-1.4}">${l}</text></g>`;
+  });
+  h += `</g>`;
+
+  // Dot grid
+  h += `<g class="map-dots-g">`;
+  DOT_YS.forEach(y => DOT_XS.forEach(x => { h += `<circle cx="${x}" cy="${y}" r="0.38"/>`; }));
+  h += `</g>`;
+
+  // Norway outline
+  h += `<path class="norway-shape" d="${NORWAY_D}"/>`;
+
+  // Project pins
+  h += `<g id="map-pins">`;
+  PROJECTS.forEach(p => {
+    h += `<g class="pin" data-id="${p.id}" transform="translate(${p.pos.x},${p.pos.y})">
+      <circle class="pin-hit" cx="0" cy="0" r="4"/>
+      <circle class="pin-dot" cx="0" cy="0" r="1.4"/>
+    </g>`;
+  });
+  h += `</g>`;
+
+  svg.innerHTML = h;
+
+  svg.querySelectorAll(".pin").forEach(pin => {
+    pin.addEventListener("click", () => setActive(pin.dataset.id));
+  });
+}
+
+function refreshPins() {
+  const vis = new Set(filtered().map(p => p.id));
+  document.querySelectorAll(".pin").forEach(pin => {
+    const id = pin.dataset.id;
+    const isActive = id === activeId;
+    const inView  = vis.has(id);
+    pin.style.display = inView ? "" : "none";
+    const dot  = pin.querySelector(".pin-dot");
+    let ring   = pin.querySelector(".pin-ring");
+    if(isActive && inView) {
+      if(!ring) {
+        ring = document.createElementNS("http://www.w3.org/2000/svg","circle");
+        ring.setAttribute("class","pin-ring"); ring.setAttribute("cx","0"); ring.setAttribute("cy","0"); ring.setAttribute("r","1.6");
+        pin.insertBefore(ring, pin.firstChild);
+      }
+      dot.setAttribute("r","1.9"); pin.classList.add("active");
+    } else {
+      if(ring) ring.remove();
+      dot.setAttribute("r","1.4"); pin.classList.remove("active");
+    }
+  });
+  const p = PROJECTS.find(p => p.id === activeId);
+  document.getElementById("map-coord").textContent = p ? `E ${p.E} · N ${p.N}` : "—";
+}
+
+// ── PROJECTS PANEL ────────────────────────────────────────────────────────────
+
+function renderProjects() {
+  const list = filtered();
+  if(!list.find(p => p.id === activeId)) activeId = list[0]?.id;
+
+  // Filter buttons
+  document.querySelectorAll(".filter-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.f === currentFilter);
+  });
+  document.querySelector(".filter-count").textContent =
+    `${String(list.length).padStart(2,"0")} / ${String(PROJECTS.length).padStart(2,"0")}`;
+
+  // Project cards
+  document.getElementById("proj-list").innerHTML = list.map((p,i) => `
+    <div class="proj-card${p.id===activeId?" active":""}" data-id="${p.id}">
+      <div class="idx">${String(i+1).padStart(2,"0")}</div>
+      <div>
+        <h4>${p.title}</h4>
+        <div class="meta">${p.region}<span class="sep">·</span>${p.year}<span class="sep">·</span>E ${p.E}</div>
+      </div>
+      <div class="tag">${p.cat}</div>
+    </div>
+  `).join("");
+
+  document.querySelectorAll("#proj-list .proj-card").forEach(card => {
+    card.addEventListener("click", () => setActive(card.dataset.id));
+  });
+
+  // Detail
+  const active = PROJECTS.find(p => p.id === activeId);
+  const det = document.getElementById("proj-detail");
+  if(active) {
+    det.style.display = "";
+    document.getElementById("proj-detail-text").textContent = active.desc;
+  } else {
+    det.style.display = "none";
+  }
+
+  refreshPins();
+}
+
+function setActive(id) {
+  activeId = id;
+  renderProjects();
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  // Feltstasjon
+  tickFeltstasjon();
+  setInterval(tickFeltstasjon, 1400);
+
+  // Marquee
+  const row = [...CLIENTS, ...CLIENTS];
+  document.getElementById("marquee-track").innerHTML = row.map(c =>
+    `<a class="client-logo" href="${c.url}" target="_blank" rel="noopener noreferrer" title="${c.name}" aria-label="${c.name}">
+      <img src="assets/clients/${c.slug}.png" alt="${c.name}">
+    </a>`
+  ).join("");
+
+  // Services grid
+  document.getElementById("svc-grid").innerHTML = SERVICES.map(s =>
+    `<a class="svc" href="tjenester.html#${s.slug}">
+      <div class="svc-num">${s.n} / 08</div>
+      <div class="svc-icon">${iconSvg(s.icon)}</div>
+      <h3 class="svc-title">${s.name}</h3>
+      <div class="svc-slogan">${s.slogan[0]}<br>${s.slogan[1]}</div>
+      <p class="svc-desc">${s.desc}</p>
+      <span class="svc-link">Les mer <span class="arr">→</span></span>
+    </a>`
+  ).join("");
+
+  // Norway map
+  buildMap();
+
+  // Project filter controls
+  const filters = ["Alle","Bygg","Vei","Industri"];
+  document.getElementById("proj-controls").innerHTML =
+    filters.map(f => `<button class="filter filter-btn${f===currentFilter?" active":""}" data-f="${f}">${f}</button>`).join("") +
+    `<span class="filter-count">${String(PROJECTS.length).padStart(2,"0")} / ${String(PROJECTS.length).padStart(2,"0")}</span>`;
+
+  document.querySelectorAll(".filter-btn").forEach(btn => {
+    btn.addEventListener("click", () => { currentFilter = btn.dataset.f; renderProjects(); });
+  });
+
+  renderProjects();
+
+  // Process steps
+  document.getElementById("process-grid").innerHTML = PROCESS.map(s =>
+    `<div class="step">
+      <div class="step-num">STEG ${s.n}</div>
+      <h4>${s.title}</h4>
+      <p>${s.desc}</p>
+      <div class="step-out">
+        <span class="lbl">${s.out.lbl}</span><br>
+        <strong>${s.out.val}</strong>
+      </div>
+    </div>`
+  ).join("");
+
+  // Equipment
+  document.getElementById("equip-list").innerHTML = EQUIPMENT.map(e =>
+    `<div class="equip-row">
+      <div class="brand">${e.brand}</div>
+      <div class="model">${e.model}<span class="etype">${e.type}</span></div>
+      <div class="spec">${e.spec}</div>
+    </div>`
+  ).join("");
+
+  // Certifications
+  document.getElementById("cert-list").innerHTML = CERTS.map(c =>
+    `<li><span class="tick">[✓]</span><span>${c}</span></li>`
+  ).join("");
+
+  // Footer services
+  document.getElementById("foot-services").innerHTML = SERVICES.map(s =>
+    `<li><a href="tjenester.html#${s.slug}">${s.name}</a></li>`
+  ).join("");
+
+  // Contact form
+  document.getElementById("contact-form").addEventListener("submit", e => {
+    e.preventDefault();
+    const sent = document.getElementById("form-sent");
+    sent.style.display = "";
+    e.target.reset();
+    setTimeout(() => { sent.style.display = "none"; }, 5000);
+  });
+
+  // Cookie banner
+  if(!localStorage.getItem("norma-cookie")) {
+    setTimeout(() => { document.getElementById("cookie-banner").style.display = ""; }, 1200);
+  }
+  document.getElementById("ck-all").addEventListener("click",      () => dismissCookie("all"));
+  document.getElementById("ck-necessary").addEventListener("click", () => dismissCookie("necessary"));
+
+  // Fade-in on scroll
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add("in"); });
+  }, { threshold: 0.12 });
+  document.querySelectorAll(".fade-in").forEach(el => io.observe(el));
+
+  // Hash jump — for arriving from tjenester.html#kontakt etc.
+  const NAV = 84;
+  const jumpTo = hash => {
+    if(!hash || hash==="#" || hash==="#top") return;
+    const el = document.getElementById(hash.replace(/^#/,""));
+    if(!el) return;
+    window.scrollTo({ top: el.getBoundingClientRect().top + window.pageYOffset - NAV, behavior:"auto" });
+  };
+  requestAnimationFrame(() => jumpTo(window.location.hash));
+  if(document.readyState==="complete") setTimeout(() => jumpTo(window.location.hash), 60);
+  else window.addEventListener("load", () => jumpTo(window.location.hash));
+});
+
+function dismissCookie(val) {
+  localStorage.setItem("norma-cookie", val);
+  document.getElementById("cookie-banner").style.display = "none";
+}
+</script>
 </body>
 </html>
