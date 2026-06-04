@@ -1,0 +1,207 @@
+/* Tjenester subpage — extends styles.css (shared variables/fonts) */
+
+/* ---- HERO band ---- */
+.tj-hero {
+  position: relative;
+  background: var(--anthracite);
+  color: var(--white);
+  overflow: hidden;
+  padding: clamp(72px, 12vh, 132px) 0 clamp(56px, 9vh, 104px);
+}
+.tj-hero .hero-topo { /* reuse texture from styles.css */ }
+.tj-hero-inner { position: relative; max-width: 880px; }
+.tj-hero h1 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(38px, 5.4vw, 68px);
+  line-height: 1.02; letter-spacing: -0.02em;
+  margin: 0; text-wrap: balance;
+}
+.tj-hero h1 .accent { color: var(--yellow); }
+.tj-hero .tj-lede {
+  margin: 26px 0 0;
+  font-size: clamp(17px, 1.6vw, 20px);
+  line-height: 1.6;
+  color: var(--text-muted-dark);
+  max-width: 620px;
+  text-wrap: pretty;
+}
+
+/* quick jump chips */
+.tj-jump {
+  position: relative;
+  margin-top: 40px;
+  display: flex; flex-wrap: wrap; gap: 10px;
+}
+.tj-jump a {
+  font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 8px 14px;
+  border: 1px solid rgba(255,255,255,0.18);
+  color: var(--text-muted-dark);
+  transition: all .18s ease;
+}
+.tj-jump a:hover { border-color: var(--yellow); color: var(--yellow); }
+
+/* ---- HISTORIE ---- */
+.tj-history {
+  background: var(--white);
+  padding: clamp(72px, 9vh, 120px) 0;
+  border-bottom: 1px solid var(--gray-line);
+}
+.tj-history-grid {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: clamp(40px, 6vw, 88px);
+  align-items: start;
+}
+@media (max-width: 900px) { .tj-history-grid { grid-template-columns: 1fr; gap: 28px; } }
+.tj-history h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(28px, 3vw, 42px);
+  line-height: 1.08; letter-spacing: -0.02em;
+  margin: 14px 0 0; text-wrap: balance;
+}
+.tj-history h2 .accent { color: var(--yellow-deep); }
+.tj-history-body p {
+  font-size: 16px; line-height: 1.72;
+  color: var(--text-muted-light);
+  margin: 0 0 20px;
+  text-align: justify; text-align-last: left; hyphens: manual;
+}
+.tj-history-body p:last-child { margin-bottom: 0; }
+.tj-history-body p:first-child::first-letter {
+  font-family: var(--font-display);
+  font-weight: 600;
+  float: left;
+  font-size: 58px;
+  line-height: 0.82;
+  padding: 6px 12px 0 0;
+  color: var(--anthracite);
+}
+
+/* ---- SERVICE DETAIL ROWS ---- */
+.tj-services { background: var(--gray-bg); }
+.svc-detail {
+  border-bottom: 1px solid var(--gray-line);
+  padding: clamp(56px, 8vh, 100px) 0;
+  scroll-margin-top: 88px;
+}
+.svc-detail:nth-child(even) { background: var(--white); }
+.svc-detail-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(36px, 5vw, 72px);
+  align-items: center;
+}
+@media (max-width: 920px) { .svc-detail-inner { grid-template-columns: 1fr; gap: 32px; } }
+
+/* media */
+.svc-media {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  background: var(--anthracite-2);
+}
+.svc-media img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+}
+.svc-media .svc-media-tag {
+  position: absolute; left: 0; bottom: 0;
+  background: var(--yellow);
+  color: var(--anthracite);
+  font-family: var(--font-mono);
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  font-weight: 600;
+  padding: 7px 14px;
+}
+.svc-detail:nth-child(even) .svc-detail-inner { direction: rtl; }
+.svc-detail:nth-child(even) .svc-detail-inner > * { direction: ltr; }
+@media (max-width: 920px) {
+  .svc-detail:nth-child(even) .svc-detail-inner { direction: ltr; }
+  .svc-media { order: -1; }
+}
+
+/* content */
+.svc-detail-num {
+  display: flex; align-items: center; gap: 14px;
+  font-family: var(--font-mono);
+  font-size: 12px; letter-spacing: 0.18em;
+  color: var(--text-muted-light);
+  margin-bottom: 18px;
+}
+.svc-detail-num .ic {
+  width: 34px; height: 34px; color: var(--anthracite);
+  flex: 0 0 auto;
+}
+.svc-detail-num .line { flex: 1; height: 1px; background: var(--gray-line); }
+.svc-detail h3 {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--text-muted-light);
+  margin: 0 0 10px;
+}
+.svc-detail .svc-detail-slogan {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(26px, 2.6vw, 36px);
+  line-height: 1.1; letter-spacing: -0.015em;
+  color: var(--yellow-deep);
+  margin: 0 0 18px; text-wrap: balance;
+}
+.svc-detail .svc-detail-intro {
+  font-size: 16px; line-height: 1.68;
+  color: var(--text-muted-light);
+  margin: 0 0 24px;
+  text-align: justify; text-align-last: left; hyphens: manual;
+  max-width: 540px;
+}
+.svc-scope {
+  font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--anthracite);
+  margin: 0 0 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.svc-scope::before { content: ""; width: 18px; height: 1px; background: var(--yellow); }
+.svc-bullets { margin: 0; padding: 0; list-style: none; }
+.svc-bullets li {
+  position: relative;
+  padding-left: 24px;
+  margin-bottom: 10px;
+  font-size: 15px; line-height: 1.5;
+  color: var(--anthracite);
+}
+.svc-bullets li::before {
+  content: ""; position: absolute; left: 4px; top: 8px;
+  width: 6px; height: 6px;
+  background: var(--yellow); transform: rotate(45deg);
+}
+
+/* ---- CTA strip ---- */
+.tj-cta {
+  background: var(--anthracite);
+  color: var(--white);
+  padding: clamp(64px, 9vh, 110px) 0;
+  position: relative; overflow: hidden;
+}
+.tj-cta-inner {
+  position: relative;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 32px; flex-wrap: wrap;
+}
+.tj-cta h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(28px, 3.4vw, 46px);
+  line-height: 1.06; letter-spacing: -0.02em;
+  margin: 0; text-wrap: balance;
+}
+.tj-cta h2 .accent { color: var(--yellow); }
+.tj-cta p {
+  margin: 14px 0 0; color: var(--text-muted-dark);
+  font-size: 16px; max-width: 440px;
+}
