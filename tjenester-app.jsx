@@ -30,6 +30,7 @@ function TjNav() {
         </div>
         <a href="index.html#kontakt" className="nav-cta nav-cta-desktop">Be om tilbud</a>
         <button
+          id="nav-toggle"
           className={"nav-toggle" + (open ? " open" : "")}
           aria-label={open ? "Lukk meny" : "Åpne meny"}
           aria-expanded={open}
