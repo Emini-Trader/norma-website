@@ -1,23 +1,51 @@
 // Tjenester subpage — reuses SERVICES, SERVICE_DETAILS, HISTORY, SVC_ICONS from data.jsx/icons.jsx
 
-const { useEffect: useEffectTJ } = React;
+const { useEffect: useEffectTJ, useState: useStateTJ } = React;
 
 function TjNav() {
+  const [open, setOpen] = useStateTJ(false);
+  useEffectTJ(() => {
+    const onResize = () => { if (window.innerWidth > 860) setOpen(false); };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+  const links = [
+    { href: "index.html#tjenester", label: "Hjem" },
+    { href: "tjenester.html", label: "Tjenester", active: true },
+    { href: "index.html#prosjekter", label: "Prosjekter" },
+    { href: "index.html#prosess", label: "Slik jobber vi" },
+    { href: "index.html#utstyr", label: "Utstyr" },
+    { href: "index.html#kontakt", label: "Kontakt" },
+  ];
   return (
     <nav className="nav" data-screen-label="Nav">
       <div className="wrap nav-row">
         <a href="index.html#top" className="nav-logo">
-          <img src="assets/norma-logo.png" alt="Norma Geosystems" />
+          <img src="assets/norma-logo.png" alt="Norma Geosystems" width="95" height="36" decoding="async" />
         </a>
         <div className="nav-links">
-          <a href="index.html#tjenester">Hjem</a>
-          <a href="tjenester.html" style={{ color: "var(--yellow-deep)" }}>Tjenester</a>
-          <a href="index.html#prosjekter">Prosjekter</a>
-          <a href="index.html#prosess">Slik jobber vi</a>
-          <a href="index.html#utstyr">Utstyr</a>
-          <a href="index.html#kontakt">Kontakt</a>
+          {links.map((l) => (
+            <a key={l.label} href={l.href} style={l.active ? { color: "var(--yellow-deep)" } : undefined}>{l.label}</a>
+          ))}
         </div>
-        <a href="index.html#kontakt" className="nav-cta">Be om tilbud</a>
+        <a href="index.html#kontakt" className="nav-cta nav-cta-desktop">Be om tilbud</a>
+        <button
+          className={"nav-toggle" + (open ? " open" : "")}
+          aria-label={open ? "Lukk meny" : "Åpne meny"}
+          aria-expanded={open}
+          aria-controls="mobile-menu"
+          onClick={() => setOpen((v) => !v)}
+        >
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+      <div className={"mobile-menu" + (open ? " open" : "")} id="mobile-menu">
+        {links.map((l) => (
+          <a key={l.label} href={l.href}
+             style={l.active ? { color: "var(--yellow-deep)" } : undefined}
+             onClick={() => setOpen(false)}>{l.label}</a>
+        ))}
+        <a href="index.html#kontakt" className="mm-cta" onClick={() => setOpen(false)}>Be om tilbud</a>
       </div>
     </nav>);
 }
@@ -66,7 +94,7 @@ function ServiceDetail({ s }) {
     <section id={s.slug} className="svc-detail" data-screen-label={`Tjeneste · ${s.name}`}>
       <div className="wrap svc-detail-inner">
         <div className="svc-media">
-          <img src={`assets/services/${s.slug}.jpg`} alt={s.name} loading="lazy" />
+          <img src={`assets/services/${s.slug}.jpg`} alt={s.name} width="1440" height="960" loading="lazy" decoding="async" />
           <span className="svc-media-tag">{s.n} / 08</span>
         </div>
         <div className="svc-detail-content">
@@ -117,7 +145,7 @@ function TjFooter() {
       <div className="wrap">
         <div className="foot-grid">
           <div className="foot-logo">
-            <img src="assets/norma-logo-light.png" alt="Norma Geosystems" />
+            <img src="assets/norma-logo-light.png" alt="Norma Geosystems" width="106" height="40" loading="lazy" decoding="async" />
             <p className="foot-tag">Landmåling og geomatikk for norske entreprenører. Oslo · siden 2008.</p>
           </div>
           <div className="foot-col">

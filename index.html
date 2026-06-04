@@ -12,10 +12,10 @@
 </head>
 <body>
 
-<nav class="nav">
+<nav class="nav" id="nav">
   <div class="wrap nav-row">
     <a href="#top" class="nav-logo">
-      <img src="assets/norma-logo.png" alt="Norma Geosystems">
+      <img src="assets/norma-logo.png" alt="Norma Geosystems" width="95" height="36" decoding="async">
     </a>
     <div class="nav-links">
       <a href="#tjenester">Tjenester</a>
@@ -24,7 +24,18 @@
       <a href="#utstyr">Utstyr</a>
       <a href="#kontakt">Kontakt</a>
     </div>
-    <a href="#kontakt" class="nav-cta">Be om tilbud</a>
+    <a href="#kontakt" class="nav-cta nav-cta-desktop">Be om tilbud</a>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Åpne meny" aria-expanded="false" aria-controls="mobile-menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="#tjenester">Tjenester</a>
+    <a href="#prosjekter">Prosjekter</a>
+    <a href="#prosess">Slik jobber vi</a>
+    <a href="#utstyr">Utstyr</a>
+    <a href="#kontakt">Kontakt</a>
+    <a href="#kontakt" class="mm-cta">Be om tilbud</a>
   </div>
 </nav>
 
@@ -246,7 +257,7 @@
   <div class="wrap">
     <div class="foot-grid">
       <div class="foot-logo">
-        <img src="assets/norma-logo-light.png" alt="Norma Geosystems">
+        <img src="assets/norma-logo-light.png" alt="Norma Geosystems" width="106" height="40" loading="lazy" decoding="async">
         <p class="foot-tag">Landmåling og geomatikk for norske entreprenører. Oslo · siden 2008.</p>
       </div>
       <div class="foot-col">
@@ -305,20 +316,20 @@ const SERVICES = [
 ];
 
 const CLIENTS = [
-  { name:"AF Gruppen",            slug:"af-gruppen",        url:"https://afgruppen.no" },
-  { name:"Veidekke",              slug:"veidekke",          url:"https://veidekke.no" },
-  { name:"Skanska",               slug:"skanska",           url:"https://www.skanska.no" },
-  { name:"NCC",                   slug:"ncc",               url:"https://www.ncc.no" },
-  { name:"Peab",                  slug:"peab",              url:"https://peab.no" },
-  { name:"Implenia Norge",        slug:"implenia",          url:"https://implenia.com" },
-  { name:"Mesta",                 slug:"mesta",             url:"https://mesta.no" },
-  { name:"OHLA Norge",            slug:"ohla",              url:"https://ohla-group.com" },
-  { name:"Isachsen Anlegg",       slug:"isachsen",          url:"https://isachsen.no" },
-  { name:"LNS",                   slug:"lns",               url:"https://www.lns.no" },
-  { name:"HAB Construction",      slug:"hab",               url:"https://www.hab.no" },
-  { name:"Marthinsen & Duvholt",  slug:"marthinsen-duvholt",url:"https://www.md.no" },
-  { name:"Anlegg Øst Entreprenør",slug:"anlegg-ost",        url:"https://anleggost.no" },
-  { name:"Vassbakk & Støl",       slug:"vassbakk-stol",    url:"https://www.vsas.no" },
+  { name:"AF Gruppen",            slug:"af-gruppen",        url:"https://afgruppen.no",     w:284, h:116 },
+  { name:"Veidekke",              slug:"veidekke",          url:"https://veidekke.no",      w:186, h:163 },
+  { name:"Skanska",               slug:"skanska",           url:"https://www.skanska.no",   w:308, h:46  },
+  { name:"NCC",                   slug:"ncc",               url:"https://www.ncc.no",       w:352, h:135 },
+  { name:"Peab",                  slug:"peab",              url:"https://peab.no",          w:360, h:50  },
+  { name:"Implenia Norge",        slug:"implenia",          url:"https://implenia.com",     w:351, h:345 },
+  { name:"Mesta",                 slug:"mesta",             url:"https://mesta.no",         w:312, h:314 },
+  { name:"OHLA Norge",            slug:"ohla",              url:"https://ohla-group.com",   w:263, h:132 },
+  { name:"Isachsen Anlegg",       slug:"isachsen",          url:"https://isachsen.no",      w:324, h:357 },
+  { name:"LNS",                   slug:"lns",               url:"https://www.lns.no",       w:340, h:336 },
+  { name:"HAB Construction",      slug:"hab",               url:"https://www.hab.no",       w:359, h:167 },
+  { name:"Marthinsen & Duvholt",  slug:"marthinsen-duvholt",url:"https://www.md.no",        w:145, h:91  },
+  { name:"Anlegg Øst Entreprenør",slug:"anlegg-ost",        url:"https://anleggost.no",     w:187, h:157 },
+  { name:"Vassbakk & Støl",       slug:"vassbakk-stol",    url:"https://www.vsas.no",      w:124, h:60  },
 ];
 
 const PROJECTS = [
@@ -445,7 +456,7 @@ function buildMap() {
   h += `</g><path class="norway-shape" d="${NORWAY_D}"/><g id="map-pins">`;
   PROJECTS.forEach(p => {
     h += `<g class="pin" data-id="${p.id}" transform="translate(${p.pos.x},${p.pos.y})">
-      <circle class="pin-hit" cx="0" cy="0" r="4"/>
+      <circle class="pin-hit" cx="0" cy="0" r="5"/>
       <circle class="pin-dot" cx="0" cy="0" r="1.4"/>
     </g>`;
   });
@@ -516,13 +527,26 @@ function setActive(id) { activeId = id; renderProjects(); }
 
 document.addEventListener("DOMContentLoaded", () => {
 
+  // ── MOBILE MENU ──
+  const navToggle = document.getElementById("nav-toggle");
+  const mobileMenu = document.getElementById("mobile-menu");
+  const setMenu = open => {
+    navToggle.classList.toggle("open", open);
+    mobileMenu.classList.toggle("open", open);
+    navToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    navToggle.setAttribute("aria-label", open ? "Lukk meny" : "Åpne meny");
+  };
+  navToggle.addEventListener("click", () => setMenu(!mobileMenu.classList.contains("open")));
+  mobileMenu.querySelectorAll("a").forEach(a => a.addEventListener("click", () => setMenu(false)));
+  window.addEventListener("resize", () => { if(window.innerWidth > 860) setMenu(false); });
+
   tickFeltstasjon();
   setInterval(tickFeltstasjon, 1400);
 
   const row = [...CLIENTS, ...CLIENTS];
   document.getElementById("marquee-track").innerHTML = row.map(c =>
     `<a class="client-logo" href="${c.url}" target="_blank" rel="noopener noreferrer" title="${c.name}" aria-label="${c.name}">
-      <img src="assets/clients/${c.slug}.png" alt="${c.name}">
+      <img src="assets/clients/${c.slug}.png" alt="${c.name}" width="${c.w}" height="${c.h}" loading="lazy" decoding="async">
     </a>`
   ).join("");
 
