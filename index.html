@@ -134,6 +134,7 @@
       </div>
       <div>
         <div class="proj-controls" id="proj-controls"></div>
+        <select class="filter-select" id="filter-select" aria-label="Filtrer prosjekter etter type"></select>
         <div class="proj-list" id="proj-list"></div>
         <div class="proj-pager" id="proj-pager"></div>
       </div>
@@ -382,6 +383,10 @@ const PROJECTS = [
   { id:"p27", title:"Østensjøbanen", region:"Oslo", year:"2023", cats:["Grunnlagsnett"], E:"602 412", N:"6 640 242", pos:{x:34, y:108} },
 ];
 
+// Sorter etter år — nyeste først (intervall som "2016–2020" bruker siste år)
+function projYear(y) { return Math.max(...String(y).split(/\D+/).filter(Boolean).map(Number)); }
+PROJECTS.sort((a, b) => projYear(b.year) - projYear(a.year));
+
 const PROCESS = [
   { n:"01", title:"Befaring",      desc:"Vi gjennomfører befaring på stedet, gjennomgår eksisterende grunnlag og definerer hvilke leveranser prosjektet krever.",                           out:{lbl:"Resultat", val:"Tilbud + plan"} },
   { n:"02", title:"Måling i felt", desc:"Terreng profilering, utstikking og kontrollmåling utføres med utstyr som oppfyller de høyeste standarder for nøyaktighet.",                      out:{lbl:"Toleranse", val:"±5 mm"} },
@@ -464,7 +469,7 @@ const DOT_YS = (()=>{
 
 let currentFilter = "Alle";
 let currentPage = 0;
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 4;
 let activeId = PROJECTS[0].id;
 const pad2 = n => String(n).padStart(2, "0");
 function filtered() {
@@ -550,6 +555,8 @@ function renderProjects() {
   document.querySelectorAll(".filter-btn").forEach(btn => {
     btn.classList.toggle("active", btn.dataset.f === currentFilter);
   });
+  const sel = document.getElementById("filter-select");
+  if(sel) sel.value = currentFilter;
   const start = currentPage * PAGE_SIZE;
   const pageItems = list.slice(start, start + PAGE_SIZE);
   document.getElementById("proj-list").innerHTML = pageItems.map((p,i) => `
@@ -634,9 +641,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const filters = ["Alle","Bygg og anlegg","Grunnlagsnett","Terrengmodell","Spormåling","Laserskanning","Målebrev","Setningsmåling","Batymetri"];
   document.getElementById("proj-controls").innerHTML =
     filters.map(f => `<button class="filter filter-btn${f===currentFilter?" active":""}" data-f="${f}">${f}</button>`).join("");
+  document.getElementById("filter-select").innerHTML =
+    filters.map(f => `<option value="${f}">${f}</option>`).join("");
+  const applyFilter = f => { currentFilter = f; currentPage = 0; renderProjects(); };
   document.querySelectorAll(".filter-btn").forEach(btn => {
-    btn.addEventListener("click", () => { currentFilter = btn.dataset.f; currentPage = 0; renderProjects(); });
+    btn.addEventListener("click", () => applyFilter(btn.dataset.f));
   });
+  document.getElementById("filter-select").addEventListener("change", e => applyFilter(e.target.value));
   renderProjects();
 
   document.getElementById("process-grid").innerHTML = PROCESS.map(s =>
