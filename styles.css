@@ -631,9 +631,9 @@ input, textarea, select { font: inherit; }
 }
 .filter {
   font-family: var(--font-mono);
-  font-size: 11px; letter-spacing: 0.16em;
+  font-size: 10px; letter-spacing: 0.06em;
   text-transform: uppercase;
-  padding: 8px 14px;
+  padding: 6px 10px;
   border: 1px solid rgba(255,255,255,0.18);
   color: var(--text-muted-dark);
   transition: all .15s ease;
@@ -651,6 +651,29 @@ input, textarea, select { font: inherit; }
   color: var(--text-faint-dark);
 }
 
+/* Paginering */
+.proj-pager {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 24px; padding-top: 20px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: 0.14em;
+  color: var(--text-faint-dark);
+}
+.pager-count { text-transform: uppercase; }
+.pager-nav { display: flex; align-items: center; gap: 14px; }
+.pager-info { color: var(--text-muted-dark); letter-spacing: 0.12em; }
+.pager-btn {
+  width: 34px; height: 34px;
+  border: 1px solid rgba(255,255,255,0.18);
+  color: var(--text-muted-dark);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 15px; line-height: 1;
+  transition: all .15s ease;
+}
+.pager-btn:hover:not(:disabled) { border-color: var(--yellow); color: var(--yellow); }
+.pager-btn:disabled { opacity: 0.3; cursor: default; }
+
 .proj-list {
   display: flex; flex-direction: column;
   gap: 0;
@@ -665,7 +688,6 @@ input, textarea, select { font: inherit; }
   cursor: pointer;
   transition: padding .2s;
 }
-.proj-card:last-child { border-bottom: 1px solid rgba(255,255,255,0.1); }
 .proj-card.active, .proj-card:hover { padding-left: 12px; }
 .proj-card .idx {
   font-family: var(--font-mono);

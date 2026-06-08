@@ -53,7 +53,7 @@
       </div>
       <div class="hero-stats">
         <div class="stat">
-          <div class="num">0.5<span style="font-size:22px;margin-left:4px">mm</span></div>
+          <div class="num">±0.5<span style="font-size:22px;margin-left:4px">mm</span></div>
           <div class="lbl">Nøyaktighet</div>
         </div>
         <div class="stat">
@@ -135,6 +135,7 @@
       <div>
         <div class="proj-controls" id="proj-controls"></div>
         <div class="proj-list" id="proj-list"></div>
+        <div class="proj-pager" id="proj-pager"></div>
       </div>
     </div>
   </div>
@@ -392,8 +393,8 @@ const EQUIPMENT = [
   { brand:"Trimble", model:"S7",   type:"Totalstasjon",            spec:"Vinkel 1″ · 1 mm + 2 ppm" },
   { brand:"Trimble", model:"SX12", type:"Skannende totalstasjon",  spec:"1″ · 3D-punkt 2,5 mm @ 100 m" },
   { brand:"Trimble", model:"R12i", type:"GNSS-mottaker (RTK)",     spec:"RTK 8 mm + 1 ppm · IMU-tilt" },
-  { brand:"Trimble", model:"R980", type:"GNSS-mottaker (RTK)",     spec:"RTK 8 mm + 1 ppm H · 15 mm V · ProPoint · IMU-tilt" },
-  { brand:"Leica",   model:"MS60", type:"Skannende multistasjon",  spec:"1″ · prisme 1 mm + 1,5 ppm · skann 30 000 pkt/s" },
+  { brand:"Trimble", model:"R980", type:"GNSS-mottaker (RTK)",     spec:"RTK 8 mm + 1 ppm · ProPoint" },
+  { brand:"Leica",   model:"MS60", type:"Skannende multistasjon",  spec:"1″ · skann 30 000 pkt/s" },
 ];
 
 const CERTS = [
@@ -462,10 +463,14 @@ const DOT_YS = (()=>{
 // ── STATE ─────────────────────────────────────────────────────────────────────
 
 let currentFilter = "Alle";
+let currentPage = 0;
+const PAGE_SIZE = 5;
 let activeId = PROJECTS[0].id;
+const pad2 = n => String(n).padStart(2, "0");
 function filtered() {
   return currentFilter === "Alle" ? PROJECTS : PROJECTS.filter(p => p.cats.includes(currentFilter));
 }
+function pageCount() { return Math.max(1, Math.ceil(filtered().length / PAGE_SIZE)); }
 
 // ── FELTSTASJON LIVE ──────────────────────────────────────────────────────────
 
@@ -539,14 +544,17 @@ function refreshPins() {
 function renderProjects() {
   const list = filtered();
   if(!list.find(p => p.id === activeId)) activeId = list[0]?.id;
+  const pages = pageCount();
+  if(currentPage > pages - 1) currentPage = pages - 1;
+  if(currentPage < 0) currentPage = 0;
   document.querySelectorAll(".filter-btn").forEach(btn => {
     btn.classList.toggle("active", btn.dataset.f === currentFilter);
   });
-  document.querySelector(".filter-count").textContent =
-    `${String(list.length).padStart(2,"0")} / ${String(PROJECTS.length).padStart(2,"0")}`;
-  document.getElementById("proj-list").innerHTML = list.map((p,i) => `
+  const start = currentPage * PAGE_SIZE;
+  const pageItems = list.slice(start, start + PAGE_SIZE);
+  document.getElementById("proj-list").innerHTML = pageItems.map((p,i) => `
     <div class="proj-card${p.id===activeId?" active":""}" data-id="${p.id}">
-      <div class="idx">${String(i+1).padStart(2,"0")}</div>
+      <div class="idx">${pad2(start + i + 1)}</div>
       <div><h4>${p.title}</h4>
         <div class="meta">${p.region}<span class="sep">·</span>${p.year}</div>
         <div class="proj-tags">${p.cats.map(c => `<span class="tag">${c}</span>`).join("")}</div>
@@ -556,10 +564,32 @@ function renderProjects() {
   document.querySelectorAll("#proj-list .proj-card").forEach(card => {
     card.addEventListener("click", () => setActive(card.dataset.id));
   });
+  renderPagination(list.length, pages);
   refreshPins();
 }
 
-function setActive(id) { activeId = id; renderProjects(); }
+function renderPagination(total, pages) {
+  const pager = document.getElementById("proj-pager");
+  const nav = pages > 1 ? `
+    <div class="pager-nav">
+      <button class="pager-btn" data-act="prev"${currentPage===0?" disabled":""} aria-label="Forrige side">←</button>
+      <span class="pager-info">${pad2(currentPage+1)} / ${pad2(pages)}</span>
+      <button class="pager-btn" data-act="next"${currentPage===pages-1?" disabled":""} aria-label="Neste side">→</button>
+    </div>` : "";
+  pager.innerHTML = `<span class="pager-count">${pad2(total)} oppdrag</span>${nav}`;
+  pager.querySelectorAll(".pager-btn").forEach(b => b.addEventListener("click", () => {
+    if(b.dataset.act === "prev" && currentPage > 0) currentPage--;
+    if(b.dataset.act === "next" && currentPage < pages - 1) currentPage++;
+    renderProjects();
+  }));
+}
+
+function setActive(id) {
+  activeId = id;
+  const idx = filtered().findIndex(p => p.id === id);
+  if(idx >= 0) currentPage = Math.floor(idx / PAGE_SIZE);
+  renderProjects();
+}
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 
@@ -603,10 +633,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const filters = ["Alle","Bygg og anlegg","Grunnlagsnett","Terrengmodell","Spormåling","Laserskanning","Målebrev","Setningsmåling","Batymetri"];
   document.getElementById("proj-controls").innerHTML =
-    filters.map(f => `<button class="filter filter-btn${f===currentFilter?" active":""}" data-f="${f}">${f}</button>`).join("") +
-    `<span class="filter-count">${String(PROJECTS.length).padStart(2,"0")} / ${String(PROJECTS.length).padStart(2,"0")}</span>`;
+    filters.map(f => `<button class="filter filter-btn${f===currentFilter?" active":""}" data-f="${f}">${f}</button>`).join("");
   document.querySelectorAll(".filter-btn").forEach(btn => {
-    btn.addEventListener("click", () => { currentFilter = btn.dataset.f; renderProjects(); });
+    btn.addEventListener("click", () => { currentFilter = btn.dataset.f; currentPage = 0; renderProjects(); });
   });
   renderProjects();
 
