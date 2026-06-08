@@ -53,15 +53,15 @@
       </div>
       <div class="hero-stats">
         <div class="stat">
-          <div class="num">±5<span style="font-size:22px;margin-left:4px">mm</span></div>
+          <div class="num">0.5<span style="font-size:22px;margin-left:4px">mm</span></div>
           <div class="lbl">Nøyaktighet</div>
         </div>
         <div class="stat">
-          <div class="num">xx+</div>
-          <div class="lbl">FORNØYE KUNDER</div>
+          <div class="num">20+</div>
+          <div class="lbl">Fornøyde kunder</div>
         </div>
         <div class="stat">
-          <div class="num">xx+</div>
+          <div class="num">50+</div>
           <div class="lbl">Prosjekter</div>
         </div>
       </div>
@@ -118,7 +118,7 @@
     <div class="sec-head fade-in">
       <div>
         <div class="eyebrow">Prosjekter</div>
-        <h2 class="sec-title"><span class="accent">xx+</span> oppdrag. Vest, sør og helt nord.</h2>
+        <h2 class="sec-title"><span class="accent">50+</span> oppdrag. Vest, sør og helt nord.</h2>
       </div>
       <p class="sec-lede">Klikk en pinne på kartet eller bla i listen. Alle koordinater oppgis i UTM 32 / EUREF89.</p>
     </div>
@@ -135,10 +135,6 @@
       <div>
         <div class="proj-controls" id="proj-controls"></div>
         <div class="proj-list" id="proj-list"></div>
-        <div class="proj-detail" id="proj-detail" style="display:none">
-          <h5>Oppdraget</h5>
-          <p id="proj-detail-text"></p>
-        </div>
       </div>
     </div>
   </div>
@@ -356,11 +352,33 @@ const CLIENTS = [
 ];
 
 const PROJECTS = [
-  { id:"p01", title:"Sentrumskvartalet K3",  region:"Bergen",          year:"2025", cat:"Bygg",    desc:"Utstikking og as-built for kontorbygg på 14 200 m². Daglig kontrollmåling av søyleposisjoner mot BIM-modell.",          E:"297 640", N:"6 700 510", pos:{x:9,  y:99}  },
-  { id:"p02", title:"Fv. 60 Stordal–Volda", region:"Møre og Romsdal", year:"2025", cat:"Vei",     desc:"Stikning av veitrasé over 6,2 km med tre tunnelpåhugg. Levert KOF-filer til entreprenørens maskinstyring.",            E:"366 210", N:"6 900 080", pos:{x:16, y:83}  },
-  { id:"p03", title:"Hamn Industripark",     region:"Tromsø",          year:"2024", cat:"Industri",desc:"Volumberegning av massedeponi og kvartalsvis dronefotogrammetri. Terrengmodell levert i LandXML.",                     E:"716 040", N:"7 725 300", pos:{x:57, y:21}  },
-  { id:"p04", title:"Stasjonsbyen",          region:"Lillestrøm",      year:"2024", cat:"Bygg",    desc:"Eiendomsmåling og situasjonsplan for boligfelt med 280 enheter. Innmåling av infrastruktur før overlevering.",          E:"615 420", N:"6 646 110", pos:{x:32, y:105} },
-  { id:"p05", title:"Fv. 714 Hitra–Frøya",  region:"Trøndelag",       year:"2024", cat:"Vei",     desc:"Laserskanning av eksisterende vegfundament før reasfaltering. Punktsky integrert mot fagmodell.",                       E:"491 820", N:"7 058 040", pos:{x:33, y:73}  },
+  { id:"p01", title:"Ny flyplass i Mo i Rana", region:"Mo i Rana", year:"2022", cats:["Bygg og anlegg"], E:"730 328", N:"7 364 250", pos:{x:43, y:49} },
+  { id:"p02", title:"Gjønnes tunnelen", region:"Gjønnes, Oslo", year:"2023", cats:["Bygg og anlegg","Grunnlagsnett","Målebrev","Setningsmåling"], E:"590 498", N:"6 644 332", pos:{x:28, y:105} },
+  { id:"p03", title:"UDK03 Drammen stasjon", region:"Drammen", year:"2024", cats:["Bygg og anlegg","Spormåling"], E:"567 700", N:"6 623 516", pos:{x:26, y:107} },
+  { id:"p04", title:"E16 Bjørum–Skaret", region:"Skaret", year:"2024", cats:["Bygg og anlegg"], E:"572 178", N:"6 656 417", pos:{x:27, y:103} },
+  { id:"p05", title:"E6 Kvænangsfjellet", region:"Kvænangsfjellet", year:"2024", cats:["Bygg og anlegg"], E:"998 168", N:"7 794 655", pos:{x:64, y:20} },
+  { id:"p06", title:"Drammen sykehus", region:"Drammen", year:"2022", cats:["Bygg og anlegg"], E:"567 700", N:"6 623 516", pos:{x:25, y:109} },
+  { id:"p07", title:"Fv. 659 Nordøyvegen", region:"Ålesund", year:"2021", cats:["Bygg og anlegg"], E:"364 057", N:"6 946 044", pos:{x:13, y:79} },
+  { id:"p08", title:"S1 Kanebogen", region:"Harstad", year:"2023", cats:["Bygg og anlegg"], E:"802 313", N:"7 648 310", pos:{x:50, y:30} },
+  { id:"p09", title:"Blindheim–Flisnes", region:"Ålesund", year:"2024", cats:["Grunnlagsnett"], E:"357 643", N:"6 928 189", pos:{x:14, y:83} },
+  { id:"p10", title:"Eidsvoll–Venjar", region:"Eidsvoll", year:"2022", cats:["Spormåling"], E:"620 478", N:"6 686 814", pos:{x:34, y:101} },
+  { id:"p11", title:"Våler–Kåten", region:"Våler", year:"2022", cats:["Spormåling"], E:"654 582", N:"6 730 140", pos:{x:37, y:99} },
+  { id:"p12", title:"Møller", region:"Gardermoen", year:"2022", cats:["Terrengmodell"], E:"616 456", N:"6 674 858", pos:{x:33, y:102} },
+  { id:"p13", title:"Josefines gate 27", region:"Oslo", year:"2021", cats:["Laserskanning"], E:"596 589", N:"6 644 542", pos:{x:31, y:106} },
+  { id:"p14", title:"E39 Rogfast", region:"Rogfast", year:"2022", cats:["Batymetri"], E:"300 143", N:"6 567 568", pos:{x:10, y:112} },
+  { id:"p15", title:"E18 Langangen–Rugtvedt", region:"Langangen", year:"2023", cats:["Bygg og anlegg","Grunnlagsnett","Batymetri"], E:"543 543", N:"6 550 878", pos:{x:22, y:113} },
+  { id:"p16", title:"Lunnestein 4D", region:"Oslo", year:"2023", cats:["Terrengmodell"], E:"597 980", N:"6 643 119", pos:{x:32, y:107} },
+  { id:"p17", title:"E18 Oslo", region:"Oslo", year:"2023", cats:["Målebrev"], E:"597 309", N:"6 642 667", pos:{x:29, y:108} },
+  { id:"p18", title:"Kirkegata 23–25", region:"Oslo", year:"2023", cats:["Bygg og anlegg"], E:"597 587", N:"6 642 730", pos:{x:31, y:105} },
+  { id:"p19", title:"Bulk Nebbenes", region:"Nebbenes", year:"2021", cats:["Bygg og anlegg","Målebrev"], E:"616 379", N:"6 693 924", pos:{x:35, y:100} },
+  { id:"p20", title:"Hellefossen", region:"Drammen", year:"2021", cats:["Laserskanning"], E:"553 917", N:"6 626 187", pos:{x:23, y:106} },
+  { id:"p21", title:"Grefsen", region:"Oslo", year:"2021", cats:["Grunnlagsnett","Spormåling"], E:"599 729", N:"6 646 297", pos:{x:32, y:104} },
+  { id:"p22", title:"Jordal Amfi", region:"Oslo", year:"2021", cats:["Bygg og anlegg","Grunnlagsnett"], E:"599 481", N:"6 643 059", pos:{x:33, y:106} },
+  { id:"p23", title:"Elvetangen 16", region:"Billingstad", year:"2023", cats:["Laserskanning"], E:"583 227", N:"6 639 427", pos:{x:28, y:106} },
+  { id:"p24", title:"UNB10 Nykirke–Barkåker", region:"Nykirke", year:"2023", cats:["Spormåling"], E:"577 383", N:"6 577 589", pos:{x:27, y:111} },
+  { id:"p25", title:"E6 Moelv", region:"Moelv", year:"2021", cats:["Grunnlagsnett"], E:"592 141", N:"6 756 185", pos:{x:31, y:95} },
+  { id:"p26", title:"Ski stasjon", region:"Ski", year:"2016–2020", cats:["Grunnlagsnett","Spormåling","Setningsmåling"], E:"603 210", N:"6 621 545", pos:{x:32, y:109} },
+  { id:"p27", title:"Østensjøbanen", region:"Oslo", year:"2023", cats:["Grunnlagsnett"], E:"602 412", N:"6 640 242", pos:{x:34, y:108} },
 ];
 
 const PROCESS = [
@@ -371,10 +389,11 @@ const PROCESS = [
 ];
 
 const EQUIPMENT = [
-  { brand:"Trimble", model:"S7",   type:"Totalstasjon",           spec:"Vinkel 1″ · 1 mm + 2 ppm" },
-  { brand:"Trimble", model:"SX12", type:"Skannende totalstasjon", spec:"1″ · 3D-punkt 2,5 mm @ 100 m" },
-  { brand:"Trimble", model:"R12i", type:"GNSS-mottaker (RTK)",    spec:"RTK 8 mm + 1 ppm · IMU-tilt" },
-  { brand:"Leica",   model:"M60",  type:"Skannende totalstasjon", spec:"spes. bekreftes" },
+  { brand:"Trimble", model:"S7",   type:"Totalstasjon",            spec:"Vinkel 1″ · 1 mm + 2 ppm" },
+  { brand:"Trimble", model:"SX12", type:"Skannende totalstasjon",  spec:"1″ · 3D-punkt 2,5 mm @ 100 m" },
+  { brand:"Trimble", model:"R12i", type:"GNSS-mottaker (RTK)",     spec:"RTK 8 mm + 1 ppm · IMU-tilt" },
+  { brand:"Trimble", model:"R980", type:"GNSS-mottaker (RTK)",     spec:"RTK 8 mm + 1 ppm H · 15 mm V · ProPoint · IMU-tilt" },
+  { brand:"Leica",   model:"MS60", type:"Skannende multistasjon",  spec:"1″ · prisme 1 mm + 1,5 ppm · skann 30 000 pkt/s" },
 ];
 
 const CERTS = [
@@ -445,7 +464,7 @@ const DOT_YS = (()=>{
 let currentFilter = "Alle";
 let activeId = PROJECTS[0].id;
 function filtered() {
-  return currentFilter === "Alle" ? PROJECTS : PROJECTS.filter(p => p.cat === currentFilter);
+  return currentFilter === "Alle" ? PROJECTS : PROJECTS.filter(p => p.cats.includes(currentFilter));
 }
 
 // ── FELTSTASJON LIVE ──────────────────────────────────────────────────────────
@@ -529,18 +548,14 @@ function renderProjects() {
     <div class="proj-card${p.id===activeId?" active":""}" data-id="${p.id}">
       <div class="idx">${String(i+1).padStart(2,"0")}</div>
       <div><h4>${p.title}</h4>
-        <div class="meta">${p.region}<span class="sep">·</span>${p.year}<span class="sep">·</span>E ${p.E}</div>
+        <div class="meta">${p.region}<span class="sep">·</span>${p.year}</div>
+        <div class="proj-tags">${p.cats.map(c => `<span class="tag">${c}</span>`).join("")}</div>
       </div>
-      <div class="tag">${p.cat}</div>
     </div>
   `).join("");
   document.querySelectorAll("#proj-list .proj-card").forEach(card => {
     card.addEventListener("click", () => setActive(card.dataset.id));
   });
-  const active = PROJECTS.find(p => p.id === activeId);
-  const det = document.getElementById("proj-detail");
-  if(active) { det.style.display=""; document.getElementById("proj-detail-text").textContent=active.desc; }
-  else        { det.style.display="none"; }
   refreshPins();
 }
 
@@ -586,7 +601,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   buildMap();
 
-  const filters = ["Alle","Bygg","Vei","Industri"];
+  const filters = ["Alle","Bygg og anlegg","Grunnlagsnett","Terrengmodell","Spormåling","Laserskanning","Målebrev","Setningsmåling","Batymetri"];
   document.getElementById("proj-controls").innerHTML =
     filters.map(f => `<button class="filter filter-btn${f===currentFilter?" active":""}" data-f="${f}">${f}</button>`).join("") +
     `<span class="filter-count">${String(PROJECTS.length).padStart(2,"0")} / ${String(PROJECTS.length).padStart(2,"0")}</span>`;
