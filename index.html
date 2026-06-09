@@ -745,6 +745,21 @@ document.addEventListener("DOMContentLoaded", () => {
   }, { threshold: 0.12 });
   document.querySelectorAll(".fade-in").forEach(el => io.observe(el));
 
+  // Tilpass den tynne linja over hero-statistikken slik at den slutter der ordet PRESISJON slutter
+  const alignHeroStats = () => {
+    const accent = document.querySelector(".hero h1 .accent");
+    const stats = document.querySelector(".hero-stats");
+    const h1 = document.querySelector(".hero h1");
+    if(!accent || !stats || !h1) return;
+    if(window.innerWidth <= 1000) { stats.style.maxWidth = ""; return; }
+    const w = accent.getBoundingClientRect().right - h1.getBoundingClientRect().left;
+    if(w > 0) stats.style.maxWidth = Math.round(w) + "px";
+  };
+  alignHeroStats();
+  window.addEventListener("resize", alignHeroStats);
+  window.addEventListener("load", alignHeroStats);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(alignHeroStats);
+
   const NAV = 84;
   const jumpTo = hash => {
     if(!hash || hash==="#" || hash==="#top") return;
