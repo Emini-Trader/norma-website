@@ -55,7 +55,8 @@ input, textarea, select { font: inherit; }
   height: 72px;
 }
 .nav-logo { display: flex; align-items: center; gap: 12px; }
-.nav-logo img { height: 46px; width: auto; display: block; }
+.nav-logo img { height: 52px; width: auto; display: block; }
+@media (max-width: 600px) { .nav-logo img { height: 42px; } }
 .nav-links { display: flex; gap: 28px; align-items: center; }
 .nav-links a {
   font-family: var(--font-display);
@@ -392,7 +393,7 @@ input, textarea, select { font: inherit; }
 /* ---------- PROGRAMVARE-BAR (Utstyr) ---------- */
 .software-bar {
   margin-top: 0;
-  padding-top: clamp(44px, 5vw, 60px);
+  padding-top: 22px;
 }
 .software-label {
   text-align: center;
@@ -877,7 +878,6 @@ input, textarea, select { font: inherit; }
   grid-template-columns: 1.2fr 1fr;
   gap: clamp(40px, 5vw, 72px);
   align-items: start;
-  padding-bottom: clamp(44px, 5vw, 60px);
   border-bottom: 1px solid var(--gray-line);
 }
 @media (max-width: 900px) { .equip-wrap { grid-template-columns: 1fr; } }
