@@ -51,12 +51,19 @@
 }
 .tj-history-grid {
   display: grid;
-  grid-template-columns: 0.85fr 1.15fr;
-  gap: clamp(40px, 6vw, 88px);
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: clamp(36px, 4vw, 72px);
   align-items: stretch;
 }
 @media (max-width: 900px) { .tj-history-grid { grid-template-columns: 1fr; gap: 28px; } }
 .tj-history-left { display: flex; flex-direction: column; }
+@media (min-width: 901px) {
+  .tj-history-left { position: relative; }
+  /* Flytt HISTORIE opp i seksjonens topp-padding, slik at selve overskriften
+     starter på samme høyde som teksten til høyre (uten å endre seksjonshøyden) */
+  .tj-history-left .eyebrow { position: absolute; bottom: 100%; left: 0; }
+  .tj-history-grid .tj-history-left h2 { margin-top: 0; }
+}
 .tj-history-photo {
   flex: 1 1 auto;
   min-height: 150px;
