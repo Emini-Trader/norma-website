@@ -77,9 +77,15 @@ function TjHistory() {
   return (
     <section className="tj-history" data-screen-label="Historie">
       <div className="wrap tj-history-grid">
-        <div>
+        <div className="tj-history-left">
           <div className="eyebrow">Historie</div>
           <h2>Fra håndtegnede kart til <span className="accent">digital presisjon</span>.</h2>
+          <div className="tj-history-photo">
+            <picture>
+              <source type="image/webp" srcSet="assets/historie-720.webp 720w, assets/historie.webp 1200w" sizes="(max-width: 900px) 92vw, 40vw" />
+              <img src="assets/historie.jpg" alt="Landmåler i felt med GNSS-utstyr" width="1200" height="771" loading="lazy" decoding="async" />
+            </picture>
+          </div>
         </div>
         <div className="tj-history-body">
           {HISTORY.map((p, i) => <p key={i}>{p}</p>)}
@@ -152,7 +158,7 @@ function TjFooter() {
       <div className="wrap">
         <div className="foot-grid">
           <div className="foot-logo">
-            <img src="assets/norma-logo-light.png" alt="Norma Geosystems" width="106" height="40" loading="lazy" decoding="async" />
+            <img src="assets/norma-logo-light.png" alt="Norma Geosystems" width="222" height="44" loading="lazy" decoding="async" />
             <p className="foot-tag">Landmåling og geomatikk for norske entreprenører. Oslo · siden 2008.</p>
           </div>
           <div className="foot-col">

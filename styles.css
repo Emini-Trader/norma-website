@@ -160,12 +160,6 @@ input, textarea, select { font: inherit; }
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='600' viewBox='0 0 600 600'><g fill='none' stroke='%23F4BB29' stroke-width='0.8'><path d='M-50 120 Q150 80 300 130 T650 110'/><path d='M-50 180 Q150 140 300 190 T650 170'/><path d='M-50 240 Q150 200 300 250 T650 230'/><path d='M-50 300 Q150 260 300 310 T650 290'/><path d='M-50 360 Q150 320 300 370 T650 350'/><path d='M-50 420 Q150 380 300 430 T650 410'/><path d='M-50 480 Q150 440 300 490 T650 470'/><path d='M-50 540 Q150 500 300 550 T650 530'/></g></svg>");
   background-size: 900px 900px;
 }
-.hero-corner {
-  position: absolute; right: 0; top: 0; bottom: 0; width: 50%;
-  background:
-    linear-gradient(180deg, transparent 0%, rgba(244,187,41,0.04) 100%);
-  pointer-events: none;
-}
 .hero-inner {
   position: relative;
   display: grid;
@@ -1160,7 +1154,7 @@ input, textarea, select { font: inherit; }
 }
 @media (max-width: 900px) { .foot-grid { grid-template-columns: 1fr 1fr; gap: 32px; } }
 @media (max-width: 480px) { .foot-grid { grid-template-columns: 1fr; gap: 28px; } }
-.foot-logo img { height: 40px; margin-bottom: 16px; opacity: 0.95; }
+.foot-logo img { height: 44px; margin-bottom: 18px; opacity: 0.95; }
 .foot-tag {
   font-family: var(--font-mono);
   font-size: 11px;
