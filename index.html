@@ -15,7 +15,7 @@
 <nav class="nav" id="nav">
   <div class="wrap nav-row">
     <a href="#top" class="nav-logo">
-      <img src="assets/norma-logo.png" alt="Norma Geosystems" width="95" height="36" decoding="async">
+      <img src="assets/norma-logo.png" alt="Norma Geosystems" width="121" height="46" decoding="async">
     </a>
     <div class="nav-links">
       <a href="#tjenester">Tjenester</a>
@@ -416,10 +416,10 @@ const CERTS = [
 ];
 
 const SOFTWARE = [
-  { name:"AutoCAD",                 slug:"autocad",                 url:"https://www.autodesk.com/products/autocad/overview",                          w:284, h:300 },
-  { name:"Gemini (Volue)",          slug:"gemini",                  url:"https://www.volue.com/products-and-services/gemini-terrain",                  w:452, h:442 },
-  { name:"Trimble Business Center", slug:"trimble-business-center", url:"https://geospatial.trimble.com/en/products/software/trimble-business-center", w:414, h:462 },
-  { name:"GISLINE (Norkart)",       slug:"gisline",                 url:"https://www.norkart.no/offentlig/gisline",                                    w:222, h:241 },
+  { name:"Autodesk AutoCAD",        slug:"autocad",                 label:["Autodesk","AutoCAD"],         url:"https://www.autodesk.com/products/autocad/overview",                          w:284, h:300 },
+  { name:"Gemini Terreng",          slug:"gemini",                  label:["Gemini","Terreng"],           url:"https://www.volue.com/products-and-services/gemini-terrain",                  w:329, h:325 },
+  { name:"Trimble Business Center", slug:"trimble-business-center", label:["Trimble","Business Center"],  url:"https://geospatial.trimble.com/en/products/software/trimble-business-center", w:412, h:460 },
+  { name:"Gisline Landmåling",      slug:"gisline",                 label:["Gisline","Landmåling"],       url:"https://www.norkart.no/offentlig/gisline",                                    w:221, h:241 },
 ];
 
 // ── SVG ICONS ─────────────────────────────────────────────────────────────────
@@ -686,7 +686,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const swSet = dup => `<div class="software-set"${dup?' aria-hidden="true"':''}>` + SOFTWARE.map(s =>
     `<a class="software-logo" href="${s.url}" target="_blank" rel="noopener noreferrer" title="${s.name}" aria-label="${s.name}"${dup?' tabindex="-1"':''}>
-      <img src="assets/software/${s.slug}.png" alt="${dup?'':s.name}" width="${s.w}" height="${s.h}" loading="lazy" decoding="async">
+      <img src="assets/software/${s.slug}.png" alt="" width="${s.w}" height="${s.h}" loading="lazy" decoding="async">
+      <span class="software-name">${s.label[0]}<br>${s.label[1]}</span>
     </a>`).join("") + `</div>`;
   document.getElementById("software-track").innerHTML = swSet(false) + swSet(true);
 

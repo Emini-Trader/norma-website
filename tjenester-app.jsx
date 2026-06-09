@@ -21,7 +21,7 @@ function TjNav() {
     <nav className="nav" data-screen-label="Nav">
       <div className="wrap nav-row">
         <a href="index.html#top" className="nav-logo">
-          <img src="assets/norma-logo.png" alt="Norma Geosystems" width="95" height="36" decoding="async" />
+          <img src="assets/norma-logo.png" alt="Norma Geosystems" width="121" height="46" decoding="async" />
         </a>
         <div className="nav-links">
           {links.map((l) => (
