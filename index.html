@@ -171,6 +171,12 @@
         <ul class="cert-list" id="cert-list"></ul>
       </div>
     </div>
+    <div class="software-bar fade-in">
+      <div class="software-label">Programvare vi bruker</div>
+      <div class="software-marquee">
+        <div class="software-track" id="software-track"></div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -407,6 +413,13 @@ const CERTS = [
   "StartBank — godkjent leverandør",
   "Arbeider etter SVV-standard (Statens vegvesen)",
   "Arbeider etter Bane NOR sine krav",
+];
+
+const SOFTWARE = [
+  { name:"AutoCAD",                 slug:"autocad",                 url:"https://www.autodesk.com/products/autocad/overview",                          w:284, h:300 },
+  { name:"Gemini (Volue)",          slug:"gemini",                  url:"https://www.volue.com/products-and-services/gemini-terrain",                  w:452, h:442 },
+  { name:"Trimble Business Center", slug:"trimble-business-center", url:"https://geospatial.trimble.com/en/products/software/trimble-business-center", w:414, h:462 },
+  { name:"GISLINE (Norkart)",       slug:"gisline",                 url:"https://www.norkart.no/offentlig/gisline",                                    w:222, h:241 },
 ];
 
 // ── SVG ICONS ─────────────────────────────────────────────────────────────────
@@ -670,6 +683,12 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("cert-list").innerHTML = CERTS.map(c =>
     `<li><span class="tick">[✓]</span><span>${c}</span></li>`
   ).join("");
+
+  const swSet = dup => `<div class="software-set"${dup?' aria-hidden="true"':''}>` + SOFTWARE.map(s =>
+    `<a class="software-logo" href="${s.url}" target="_blank" rel="noopener noreferrer" title="${s.name}" aria-label="${s.name}"${dup?' tabindex="-1"':''}>
+      <img src="assets/software/${s.slug}.png" alt="${dup?'':s.name}" width="${s.w}" height="${s.h}" loading="lazy" decoding="async">
+    </a>`).join("") + `</div>`;
+  document.getElementById("software-track").innerHTML = swSet(false) + swSet(true);
 
   document.getElementById("foot-services").innerHTML = SERVICES.map(s =>
     `<li><a href="tjenester.html#${s.slug}">${s.name}</a></li>`
