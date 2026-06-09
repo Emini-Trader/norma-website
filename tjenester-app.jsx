@@ -21,7 +21,7 @@ function TjNav() {
     <nav className="nav" data-screen-label="Nav">
       <div className="wrap nav-row">
         <a href="index.html#top" className="nav-logo">
-          <img src="assets/norma-logo.png" alt="Norma Geosystems" width="262" height="52" decoding="async" />
+          <img src="assets/norma-logo.png" alt="Norma Geosystems" width="221" height="44" decoding="async" />
         </a>
         <div className="nav-links">
           {links.map((l) => (
@@ -95,7 +95,13 @@ function ServiceDetail({ s }) {
     <section id={s.slug} className="svc-detail" data-screen-label={`Tjeneste · ${s.name}`}>
       <div className="wrap svc-detail-inner">
         <div className="svc-media">
-          <img src={`assets/services/${s.slug}.jpg`} alt={s.name} width="1440" height="960" loading="lazy" decoding="async" />
+          <picture>
+            <source
+              type="image/webp"
+              srcSet={`assets/services/${s.slug}-720.webp 720w, assets/services/${s.slug}.webp 1440w`}
+              sizes="(max-width: 920px) 90vw, 45vw" />
+            <img src={`assets/services/${s.slug}.jpg`} alt={s.name} width="1440" height="960" loading="lazy" decoding="async" />
+          </picture>
           <span className="svc-media-tag">{s.n} / 08</span>
         </div>
         <div className="svc-detail-content">
