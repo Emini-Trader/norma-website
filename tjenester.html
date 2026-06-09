@@ -1,37 +1,272 @@
 <!doctype html>
 <html lang="no">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Tjenester — Norma Geosystems</title>
-  <meta name="description" content="Norma Geosystems leverer landmåling, grunnlagsnett, terrengmodell, spormåling, laserskanning, målebrev, setningsmåling og batymetri for norske entreprenører." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="tjenester.css" />
+  <meta name="description" content="Norma Geosystems leverer landmåling, grunnlagsnett, terrengmodell, spormåling, laserskanning, målebrev, setningsmåling og batymetri for norske entreprenører.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="tjenester.css">
 </head>
 <body>
-  <div id="root"></div>
 
-  <template id="__bundler_thumbnail">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
-      <rect width="400" height="400" fill="#383E42"/>
-      <g transform="translate(120 120)">
-        <rect x="0" y="0" width="160" height="100" fill="#383E42" stroke="#F4BB29" stroke-width="4"/>
-        <path d="M10 90 L80 10 L80 90 L150 10" fill="none" stroke="#F4BB29" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/>
-      </g>
-      <text x="200" y="290" text-anchor="middle" fill="#F4BB29" font-family="monospace" font-size="20" letter-spacing="4">NORMA</text>
-      <text x="200" y="316" text-anchor="middle" fill="rgba(255,255,255,0.55)" font-family="monospace" font-size="11" letter-spacing="3">TJENESTER</text>
-    </svg>
-  </template>
+<nav class="nav" id="nav">
+  <div class="wrap nav-row">
+    <a href="index.html#top" class="nav-logo">
+      <img src="assets/norma-logo.png" alt="Norma Geosystems" width="221" height="44" decoding="async">
+    </a>
+    <div class="nav-links">
+      <a href="index.html#tjenester">Hjem</a>
+      <a href="tjenester.html" style="color:var(--yellow-deep)">Tjenester</a>
+      <a href="index.html#prosjekter">Prosjekter</a>
+      <a href="index.html#prosess">Slik jobber vi</a>
+      <a href="index.html#utstyr">Utstyr</a>
+      <a href="index.html#kontakt">Kontakt</a>
+    </div>
+    <a href="index.html#kontakt" class="nav-cta nav-cta-desktop">Be om tilbud</a>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Åpne meny" aria-expanded="false" aria-controls="mobile-menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="index.html#tjenester">Hjem</a>
+    <a href="tjenester.html" style="color:var(--yellow-deep)">Tjenester</a>
+    <a href="index.html#prosjekter">Prosjekter</a>
+    <a href="index.html#prosess">Slik jobber vi</a>
+    <a href="index.html#utstyr">Utstyr</a>
+    <a href="index.html#kontakt">Kontakt</a>
+    <a href="index.html#kontakt" class="mm-cta">Be om tilbud</a>
+  </div>
+</nav>
 
-  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<header class="tj-hero">
+  <div class="hero-topo"></div>
+  <div class="wrap">
+    <div class="tj-hero-inner">
+      <div class="eyebrow" style="color:var(--yellow)">Tjenester</div>
+      <h1>Fagområder som dekker <span class="accent">hele</span> byggeprosessen.</h1>
+      <p class="tj-lede">Fra første fastmerke til ferdig dokumentasjon — vi leverer presis landmåling, 3D-modellgrunnlag og kontroll til norske bygg-, anleggs- og infrastrukturprosjekter.</p>
+      <nav class="tj-jump" id="tj-jump" aria-label="Hopp til tjeneste"></nav>
+    </div>
+  </div>
+</header>
 
-  <script type="text/babel" src="data.jsx"></script>
-  <script type="text/babel" src="icons.jsx"></script>
-  <script type="text/babel" src="tjenester-app.jsx"></script>
+<section class="tj-history">
+  <div class="wrap tj-history-grid">
+    <div class="tj-history-left">
+      <div class="eyebrow">Historie</div>
+      <h2>Fra håndtegnede kart til <span class="accent">digital presisjon</span>.</h2>
+      <div class="tj-history-photo">
+        <picture>
+          <source type="image/webp" srcset="assets/historie-720.webp 720w, assets/historie.webp 1200w" sizes="(max-width: 900px) 92vw, 40vw">
+          <img src="assets/historie.jpg" alt="Landmåler i felt med GNSS-utstyr" width="1200" height="771" loading="lazy" decoding="async">
+        </picture>
+      </div>
+    </div>
+    <div class="tj-history-body">
+      <p>Vår historie strekker seg tilbake til midten av 1990-tallet, da muligheten åpnet seg for å kommersialisere geodetisk og kartografisk virksomhet. Nye statlige regler krevde utdanning i tillegg til seks års yrkespraksis, dokumenterte kurs og bestått statseksamen — et sertifikat som ble tatt i 1992, og som dannet grunnlaget for det første selskapet.</p>
+      <p>De påfølgende årene brakte stadig større og mer krevende oppdrag, fra renseanlegget i Gubin under internasjonalt tilsyn til prosjekter som krystalliserte en tydelig og pålitelig profil i markedet. I 2001 førte veien til Norge, gjennom arbeid på Su4 / Norsk Hydro-anlegget i Sunndalsøra.</p>
+      <p>Etter mange år hos blant andre AF Spesialprosjekt, Reinertsen, Veidekke og Terratec — og prosjekter som Snøhvit, Fornebu, Norges Varemesse og Lysaker stasjon — ble Norma Geosystems etablert. Vår forståelse av geodesi går tilbake til klassiske målemetoder, manuelle trigonometriske beregninger og håndtegnede kart. Uansett dagens teknologi tar vi derfor på oss krevende måleoppgaver med moderne utstyr for innmåling og databehandling.</p>
+    </div>
+  </div>
+</section>
+
+<div class="tj-services" id="tj-services"></div>
+
+<section class="tj-cta">
+  <div class="hero-topo"></div>
+  <div class="wrap tj-cta-inner">
+    <div>
+      <h2>Har du et prosjekt? <span class="accent">Ta kontakt.</span></h2>
+      <p>Vi svarer raskest på telefon og ringer deg tilbake innen samme arbeidsdag.</p>
+    </div>
+    <div class="hero-ctas">
+      <a href="index.html#kontakt" class="btn btn-primary">Be om tilbud <span class="arr">→</span></a>
+      <a href="tel:+4799074040" class="btn btn-ghost-dark">+47 99 07 40 40</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-logo">
+        <img src="assets/norma-logo-light.png" alt="Norma Geosystems" width="222" height="44" loading="lazy" decoding="async">
+        <p class="foot-tag">Landmåling og geomatikk for norske entreprenører. Oslo · siden 2008.</p>
+      </div>
+      <div class="foot-col">
+        <h5>Tjenester</h5>
+        <ul id="foot-services"></ul>
+      </div>
+      <div class="foot-col">
+        <h5>Selskap</h5>
+        <ul>
+          <li><a href="index.html#prosjekter">Prosjekter</a></li>
+          <li><a href="index.html#prosess">Slik jobber vi</a></li>
+          <li><a href="index.html#utstyr">Utstyr</a></li>
+          <li><a href="index.html#kontakt">Kontakt</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h5>Juridisk</h5>
+        <ul>
+          <li><a href="juridisk/personvern.html">Personvernerklæring</a></li>
+          <li><a href="juridisk/informasjonskapsler.html">Informasjonskapsler</a></li>
+          <li><a href="juridisk/vilkar.html">Vilkår</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 NORMA GEOSYSTEMS AS · NO 825 831 622 MVA</span>
+      <span>POST@NORMA-GS.NO · +47 99 07 40 40</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── DATA ────────────────────────────────────────────────────────────────────
+const SERVICES = [
+  { n:"01", slug:"bygg-anlegg",   icon:"road",    name:"Bygg og anlegg",  slogan:["Riktig plass","i hvert stikk"] },
+  { n:"02", slug:"grunnlagsnett", icon:"net",     name:"Grunnlagsnett",   slogan:["Nøyaktig fra","første til siste punkt"] },
+  { n:"03", slug:"terrengmodell", icon:"contour", name:"Terrengmodell",   slogan:["Vi former","terrenget digitalt"] },
+  { n:"04", slug:"setningsmaling",icon:"settle",  name:"Setningsmåling",  slogan:["Vi ser det","før det skjer"] },
+  { n:"05", slug:"laserskanning", icon:"laser",   name:"Laserskanning",   slogan:["Se alt","fanget i 3D"] },
+  { n:"06", slug:"malebrev",      icon:"doc",     name:"Målebrev",        slogan:["Du tjener mens","vi beregner"] },
+  { n:"07", slug:"spormaling",    icon:"rail",    name:"Spormåling",      slogan:["Med presisjon","på rett spor"] },
+  { n:"08", slug:"batymetri",     icon:"boat",    name:"Batymetri",       slogan:["Vi kartlegger","det usynlige"] },
+];
+
+const SERVICE_DETAILS = {
+  "bygg-anlegg": {
+    intro: "Vi gjennomfører landmåling på prosjekter innenfor bygg- og anleggsvirksomhet. Bred erfaring fra ulike typer prosjekter gir oss mulighet til å komme med trygge og gjennomtenkte løsninger — fra første fastmerke til ferdig avviksrapport.",
+    bullets: ["Etablering, innmåling og utjevning av fastmerker","Klargjøring av stikningsdata (landmåling)","Klargjøring av stikningsdata (maskinstyring)","Produksjonsstikking","Geometrisk kontroll og avviksrapportering"],
+  },
+  "grunnlagsnett": {
+    intro: "Fastmerker og grunnlagsnett er grunnsteinen i all aktivitet knyttet til innmåling. Vår lange erfaring gir bistand allerede i planleggingsfasen, med rådgivning om hvordan et homogent grunnlagsnett skal bygges opp. Vi legger stor vekt på kvalitet i etablering, innmåling, beregning og dokumentasjon.",
+    bullets: ["Rådgivning under planleggingsfasen","Etablering av fastmerker","Innmåling og beregning av grunnlagsnett","Kontroll av eksisterende grunnlagsnett"],
+  },
+  "terrengmodell": {
+    intro: "Vi gjennomfører innmåling av eksisterende terreng og situasjon for prosjektering og kontrollformål. En god og detaljert terrengmodell er et viktig fundament i prosjekteringsfasen, og gjør planleggingen både presis og effektiv.",
+    bullets: ["Innmåling av eksisterende situasjon","Innmåling og levering av terrengmodell","Etablering av hjelpepunkter","Digitalisering av basiskilder","Innmåling, profilering og 3D-modellering","DTM-kartlegging"],
+  },
+  "setningsmaling": {
+    intro: "Gjennom periodisk setnings- og deformasjonsovervåking ser vi bevegelse før den utvikler seg til et problem. Vi etablerer et stabilt målegrunnlag, kalibrerer overvåkingssystemene og dokumenterer utviklingen over tid, slik at tiltak kan settes inn i tide.",
+    bullets: ["Innledende analyse","Etablering, innmåling og utjevning av fastmerker","Kalibrering av monitoreringssystemer","Innmåling, prosessering og rapportering"],
+  },
+  "laserskanning": {
+    intro: "Med laserskanning fanger vi hele anlegget som en målbar, tredimensjonal punktsky. Teknologien gir et komplett og nøyaktig bilde av eksisterende forhold, og danner grunnlag for prosjektering, kontroll og dokumentasjon — uten gjentatte turer tilbake i felt.",
+    bullets: ["Etablering, innmåling og utjevning av fastmerker","Kalibrering av skanningssystemer","Skanning og 3D-modellering","Prosessering, visualisering og rapportering"],
+  },
+  "malebrev": {
+    intro: "Vi utarbeider komplette målebrev og sluttdokumentasjon, ferdig bearbeidet og klart til innsending. Fra rådata til offisiell leveranse sørger vi for at modeller, beregninger og rapporter oppfyller kravene fra offentlige registre som FKB og NVDB.",
+    bullets: ["3D-modellering og DTM-kartlegging","Beregning, visualisering og rapportering","Leveranse til FKB og NVDB"],
+  },
+  "spormaling": {
+    intro: "Vi utfører presis innmåling og kontroll av jernbanespor, der geometri og beliggenhet dokumenteres helt ned til millimeternivå. Med egenutviklet måleutstyr tilpasset sporets geometri leverer vi pålitelige data for nybygg, vedlikehold og kontroll av eksisterende infrastruktur.",
+    bullets: ["Etablering, innmåling og utjevning av fastmerker","Konstruksjon og utvikling av måleutstyr","Innmåling av spor","Prosessering og rapportering"],
+  },
+  "batymetri": {
+    intro: "Sjøbunnskartlegging er også en viktig del av Norma. Vår erfaring gjør det mulig å tilby innmåling med ekkolodd av elver, innsjøer og sjøbunn. Vi leverer frittstående modeller, eller i kombinasjon med andre data fra landmåling og laserskanning.",
+    bullets: ["Innmåling med ekkolodd og GPS av elver, innsjøer, mariner og sjøbunn","Bearbeiding av terrengmodeller","Tverrsnittsrapportering","Visualisering av mudring, dumping og utfylling"],
+  },
+};
+
+// ── SVG ICONS (samme sett som forsiden) ───────────────────────────────────────
+const ICON_PATHS = {
+  road: `<path d="M8 21 L10.5 3"/><path d="M16 21 L13.5 3"/><path d="M12 4.5v2.5"/><path d="M12 10.5v3"/><path d="M12 17v3.5"/>`,
+  net: (()=>{
+    const pts={a:[4,8.5],b:[11,4.5],c:[18.5,7],d:[20.5,14.5],e:[14.5,12],f:[8,11],g:[5.5,16.5],h:[13,19.5],i:[19,18.5]};
+    const edges=["a,b","b,c","a,f","b,f","b,e","c,e","c,d","e,d","a,g","f,g","f,e","f,h","g,h","e,h","e,i","d,i","h,i"];
+    return edges.map(e=>{const[p,q]=e.split(",");return`<line x1="${pts[p][0]}" y1="${pts[p][1]}" x2="${pts[q][0]}" y2="${pts[q][1]}"/>`;}).join("")+
+           Object.values(pts).map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.05" fill="currentColor" stroke="none"/>`).join("");
+  })(),
+  contour: `<path d="M2.5 14.5 C2 10 6 5.5 11 5 C16.5 4.5 21.5 7.5 21.5 12 C21.5 17 16 20.5 10.5 19.5 C6 18.7 3 17 2.5 14.5 Z"/>
+            <path d="M6 14 C5.7 11 8.3 8.3 11.6 8.1 C15.2 7.9 18.3 9.8 18.2 12.4 C18.1 15.6 14.8 17.6 11.3 16.9 C8.4 16.3 6.2 15.5 6 14 Z"/>
+            <path d="M9.4 13.6 C9.2 11.9 10.7 10.7 12.5 10.8 C14.3 10.9 15.3 12 15 13.4 C14.7 14.9 12.9 15.4 11.4 14.9 C10.3 14.5 9.5 14.3 9.4 13.6 Z"/>
+            <circle cx="12.4" cy="12.7" r="0.5" fill="currentColor" stroke="none"/>`,
+  rail: `<path d="M9 3 L9 21"/><path d="M15 3 L15 21"/><path d="M6.5 6.5h11"/><path d="M6.5 11h11"/><path d="M6.5 15.5h11"/><path d="M6.5 20h11"/>`,
+  laser: (()=>{
+    const cx=12,cy=12,inner=3.2;
+    let s=`<line x1="1" y1="12" x2="23" y2="12"/>`;
+    for(let a=0;a<360;a+=15){
+      if(a===0||a===180)continue;
+      const outer=a===90||a===270?9.8:a%30===0?8.0:6.2;
+      const rad=a*Math.PI/180;
+      s+=`<line x1="${(cx+inner*Math.cos(rad)).toFixed(2)}" y1="${(cy+inner*Math.sin(rad)).toFixed(2)}" x2="${(cx+outer*Math.cos(rad)).toFixed(2)}" y2="${(cy+outer*Math.sin(rad)).toFixed(2)}"/>`;
+    }
+    return s+`<circle cx="12" cy="12" r="2.1" fill="currentColor" stroke="none"/>`;
+  })(),
+  doc:    `<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><path d="M9.5 12h6"/><path d="M9.5 15h6"/><path d="M9.5 18h4"/>`,
+  settle: `<path d="M3 12 L7.5 8.5 L11.5 14 L15.5 7.5 L21 12.5"/>`+
+          [[3,12],[7.5,8.5],[11.5,14],[15.5,7.5],[21,12.5]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.2" fill="currentColor" stroke="none"/>`).join(""),
+  boat:   `<path d="M4 13h16l-2.2 4H6.2z"/><path d="M12 13V6"/><circle cx="12" cy="4.8" r="1.2"/><path d="M8.5 20c2 1.6 5 1.6 7 0"/><path d="M10.3 22.4c.9.7 2.5.7 3.4 0"/>`,
+};
+function iconSvg(key) {
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${ICON_PATHS[key]}</svg>`;
+}
+
+// ── BUILD ─────────────────────────────────────────────────────────────────────
+document.getElementById("tj-jump").innerHTML = SERVICES.map(s =>
+  `<a href="#${s.slug}">${s.name}</a>`).join("");
+
+document.getElementById("foot-services").innerHTML = SERVICES.map(s =>
+  `<li><a href="#${s.slug}">${s.name}</a></li>`).join("");
+
+document.getElementById("tj-services").innerHTML = SERVICES.map(s => {
+  const d = SERVICE_DETAILS[s.slug];
+  return `
+  <section id="${s.slug}" class="svc-detail">
+    <div class="wrap svc-detail-inner">
+      <div class="svc-media">
+        <picture>
+          <source type="image/webp" srcset="assets/services/${s.slug}-720.webp 720w, assets/services/${s.slug}.webp 1440w" sizes="(max-width: 920px) 90vw, 45vw">
+          <img src="assets/services/${s.slug}.jpg" alt="${s.name}" width="1440" height="960" loading="lazy" decoding="async">
+        </picture>
+        <span class="svc-media-tag">${s.n} / 08</span>
+      </div>
+      <div class="svc-detail-content">
+        <div class="svc-detail-num">
+          <span class="ic">${iconSvg(s.icon)}</span>
+          <span>${s.n} / 08</span>
+          <span class="line"></span>
+        </div>
+        <h3>${s.name}</h3>
+        <div class="svc-detail-slogan">${s.slogan[0]} ${s.slogan[1]}</div>
+        <p class="svc-detail-intro">${d.intro}</p>
+        <div class="svc-scope">Driftsområde</div>
+        <ul class="svc-bullets">${d.bullets.map(b => `<li>${b}</li>`).join("")}</ul>
+      </div>
+    </div>
+  </section>`;
+}).join("");
+
+// ── MOBILE MENU ────────────────────────────────────────────────────────────────
+const navToggle = document.getElementById("nav-toggle");
+const mobileMenu = document.getElementById("mobile-menu");
+const setMenu = open => {
+  navToggle.classList.toggle("open", open);
+  mobileMenu.classList.toggle("open", open);
+  navToggle.setAttribute("aria-expanded", open ? "true" : "false");
+  navToggle.setAttribute("aria-label", open ? "Lukk meny" : "Åpne meny");
+};
+navToggle.addEventListener("click", () => setMenu(!mobileMenu.classList.contains("open")));
+mobileMenu.querySelectorAll("a").forEach(a => a.addEventListener("click", () => setMenu(false)));
+window.addEventListener("resize", () => { if(window.innerWidth > 860) setMenu(false); });
+
+// ── HASH JUMP (kompenserer for sticky nav) ──────────────────────────────────────
+const NAV = 84;
+const jumpTo = hash => {
+  if(!hash || hash === "#") return;
+  const el = document.getElementById(hash.replace(/^#/, ""));
+  if(!el) return;
+  window.scrollTo({ top: el.getBoundingClientRect().top + window.pageYOffset - NAV, behavior: "auto" });
+};
+requestAnimationFrame(() => jumpTo(window.location.hash));
+window.addEventListener("load", () => jumpTo(window.location.hash));
+window.addEventListener("hashchange", () => jumpTo(window.location.hash));
+</script>
 </body>
 </html>
