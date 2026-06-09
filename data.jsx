@@ -21,10 +21,10 @@ const SERVICES = [
     desc: "Digital terrengmodeller for prosjektering, masseberegning og internkontroll.",
   },
   {
-    n: "04", slug: "spormaling", icon: "rail",
-    name: "Spormåling",
-    slogan: ["Med presisjon", "på rett spor"],
-    desc: "Innmåling og kontroll av jernbanespor med beliggenhet helt ned til millimeternivå.",
+    n: "04", slug: "setningsmaling", icon: "settle",
+    name: "Setningsmåling",
+    slogan: ["Vi ser det", "før det skjer"],
+    desc: "Periodisk monitorering av setninger som varsler bevegelse før den blir et problem.",
   },
   {
     n: "05", slug: "laserskanning", icon: "laser",
@@ -39,10 +39,10 @@ const SERVICES = [
     desc: "Komplette sluttdokumentasjon, ferdig bearbeidet og klart for innsending og rapportering.",
   },
   {
-    n: "07", slug: "setningsmaling", icon: "settle",
-    name: "Setningsmåling",
-    slogan: ["Vi ser det", "før det skjer"],
-    desc: "Periodisk monitorering av setninger som varsler bevegelse før den blir et problem.",
+    n: "07", slug: "spormaling", icon: "rail",
+    name: "Spormåling",
+    slogan: ["Med presisjon", "på rett spor"],
+    desc: "Innmåling og kontroll av jernbanespor med beliggenhet helt ned til millimeternivå.",
   },
   {
     n: "08", slug: "batymetri", icon: "boat",
