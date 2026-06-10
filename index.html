@@ -404,7 +404,7 @@ const PROCESS = [
 ];
 
 const EQUIPMENT = [
-  { brand:"Trimble", model:"S7",   type:"Totalstasjon",            spec:"Vinkel 1″ · 1 mm + 2 ppm" },
+  { brand:"Trimble", model:"S7",   type:"Totalstasjon",            spec:"Vinkel 1″ · 1 mm + 2 ppm", qty:2 },
   { brand:"Trimble", model:"SX12", type:"Skannende totalstasjon",  spec:"1″ · 3D-punkt 2,5 mm @ 100 m" },
   { brand:"Trimble", model:"R12i", type:"GNSS-mottaker (RTK)",     spec:"RTK 8 mm + 1 ppm · IMU-tilt" },
   { brand:"Trimble", model:"R980", type:"GNSS-mottaker (RTK)",     spec:"RTK 8 mm + 1 ppm · ProPoint" },
@@ -678,7 +678,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("equip-list").innerHTML = EQUIPMENT.map(e =>
     `<div class="equip-row">
       <div class="brand">${e.brand}</div>
-      <div class="model">${e.model}<span class="etype">${e.type}</span></div>
+      <div class="model">${e.model}${e.qty>1?`<span class="qty-badge" title="${e.qty} enheter">×${e.qty}</span>`:""}<span class="etype">${e.type}</span></div>
       <div class="spec">${e.spec}</div>
     </div>`
   ).join("");
