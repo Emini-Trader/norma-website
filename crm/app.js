@@ -440,7 +440,7 @@
             <select class="p-company">${companyOptions(p.contact_id)}</select>
           </div>
           <div class="person-actions">
-            <span class="meta-cell">${escapeHtml(editorName(p.updated_by_profile))} · ${formatDateTime(p.updated_at)}</span>
+            <span class="meta-cell">${[editorName(p.updated_by_profile), formatDateTime(p.updated_at)].filter(Boolean).map(escapeHtml).join(" · ")}</span>
             <div class="person-actions-buttons">
               <button type="button" class="btn-danger btn-delete-person">Slett</button>
               <button type="submit" class="btn-ghost btn-save-person">Lagre</button>
