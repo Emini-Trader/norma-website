@@ -55,6 +55,8 @@
     vEmail: document.getElementById("v-email"),
     vWebsite: document.getElementById("v-website"),
     vAddress: document.getElementById("v-address"),
+    vCountry: document.getElementById("v-country"),
+    vSpecialties: document.getElementById("v-specialties"),
     vStatus: document.getElementById("v-status"),
     contactForm: document.getElementById("contact-form"),
     formError: document.getElementById("form-error"),
@@ -64,6 +66,8 @@
     fEmail: document.getElementById("f-email"),
     fWebsite: document.getElementById("f-website"),
     fAddress: document.getElementById("f-address"),
+    fCountry: document.getElementById("f-country"),
+    fSpecialties: document.getElementById("f-specialties"),
     fStatus: document.getElementById("f-status"),
     deleteBtn: document.getElementById("delete-contact-btn"),
     peopleSection: document.getElementById("people-section"),
@@ -87,6 +91,8 @@
   let allContacts = [];
   let primaryContactNames = {}; // contact_id -> navn på hovedkontakt, for tabellvisning/søk
   let modalMode = "view"; // "view" (kun lesing) eller "edit"
+  let allSpecialties = []; // { id, name }, lastet én gang
+  let currentSpecialtyIds = new Set();
 
   function escapeHtml(str) {
     if (str == null) return "";
@@ -163,6 +169,12 @@
     els.userBox.hidden = false;
     els.userEmail.textContent = user.email;
     loadContacts();
+    loadSpecialtiesList();
+  }
+
+  async function loadSpecialtiesList() {
+    const { data, error } = await supabase.from("specialties").select("id, name").order("name");
+    if (!error) allSpecialties = data || [];
   }
 
   els.loginForm.addEventListener("submit", async (e) => {
@@ -283,6 +295,7 @@
     }
     renderPeople();
     renderActivities();
+    renderSpecialties();
   }
 
   function fillContact(contact) {
@@ -294,6 +307,7 @@
     els.fEmail.value = contact.email || "";
     els.fWebsite.value = contact.website || "";
     els.fAddress.value = contact.address || "";
+    els.fCountry.value = contact.country || "";
     els.fStatus.value = contact.status || "ny";
 
     els.vPhone.textContent = formatPhone(contact.phone) || "—";
@@ -304,7 +318,28 @@
       els.vWebsite.textContent = "—";
     }
     els.vAddress.textContent = contact.address || "—";
+    els.vCountry.textContent = contact.country || "—";
     els.vStatus.innerHTML = `<span class="status-badge status-${escapeHtml(contact.status)}">${escapeHtml(STATUS_LABELS[contact.status] || contact.status)}</span>`;
+  }
+
+  async function loadContactSpecialties(contactId) {
+    const { data, error } = await supabase.from("contact_specialties").select("specialty_id").eq("contact_id", contactId);
+    currentSpecialtyIds = new Set(error ? [] : (data || []).map((r) => r.specialty_id));
+    renderSpecialties();
+  }
+
+  function renderSpecialties() {
+    const names = allSpecialties.filter((s) => currentSpecialtyIds.has(s.id)).map((s) => s.name);
+    els.vSpecialties.innerHTML = names.length
+      ? names.map((n) => `<span class="specialty-tag">${escapeHtml(n)}</span>`).join("")
+      : "—";
+
+    els.fSpecialties.innerHTML = allSpecialties.map((s) => `
+      <label class="checkbox-label">
+        <input type="checkbox" class="spec-checkbox" value="${escapeHtml(s.id)}" ${currentSpecialtyIds.has(s.id) ? "checked" : ""}>
+        ${escapeHtml(s.name)}
+      </label>
+    `).join("");
   }
 
   function openModal(contact) {
@@ -319,11 +354,13 @@
       els.activitySection.hidden = false;
       loadPeople(contact.id);
       loadActivities(contact.id);
+      loadContactSpecialties(contact.id);
       setMode("view");
     } else {
       currentContact = null;
       els.modalTitle.textContent = "Ny firma";
       els.contactId.value = "";
+      els.fCountry.value = "";
       els.fStatus.value = "ny";
       els.deleteBtn.hidden = true;
       els.peopleSection.hidden = true;
@@ -332,6 +369,8 @@
       els.activityTbody.innerHTML = "";
       currentPeople = [];
       currentActivities = [];
+      currentSpecialtyIds = new Set();
+      renderSpecialties();
       setMode("edit");
     }
     els.modal.hidden = false;
@@ -351,15 +390,21 @@
       email: els.fEmail.value.trim() || null,
       website: els.fWebsite.value.trim() || null,
       address: els.fAddress.value.trim() || null,
+      country: els.fCountry.value.trim() || null,
       status: els.fStatus.value,
     };
+    const selectedSpecialtyIds = Array.from(els.fSpecialties.querySelectorAll(".spec-checkbox:checked")).map((cb) => cb.value);
 
     const isUpdate = !!els.contactId.value;
     let error;
+    let savedContactId = els.contactId.value;
+
     if (isUpdate) {
-      ({ error } = await supabase.from("contacts").update(payload).eq("id", els.contactId.value));
+      ({ error } = await supabase.from("contacts").update(payload).eq("id", savedContactId));
     } else {
-      ({ error } = await supabase.from("contacts").insert(payload));
+      const { data, error: insertError } = await supabase.from("contacts").insert(payload).select("id").single();
+      error = insertError;
+      if (data) savedContactId = data.id;
     }
 
     if (error) {
@@ -368,11 +413,23 @@
       return;
     }
 
+    if (savedContactId) {
+      const toAdd = selectedSpecialtyIds.filter((id) => !currentSpecialtyIds.has(id));
+      const toRemove = Array.from(currentSpecialtyIds).filter((id) => !selectedSpecialtyIds.includes(id));
+      if (toAdd.length) {
+        await supabase.from("contact_specialties").insert(toAdd.map((sid) => ({ contact_id: savedContactId, specialty_id: sid })));
+      }
+      if (toRemove.length) {
+        await supabase.from("contact_specialties").delete().eq("contact_id", savedContactId).in("specialty_id", toRemove);
+      }
+    }
+
     await loadContacts();
 
     if (isUpdate) {
       const fresh = allContacts.find((c) => c.id === els.contactId.value);
       if (fresh) fillContact(fresh);
+      await loadContactSpecialties(savedContactId);
       setMode("view");
     } else {
       closeModal();

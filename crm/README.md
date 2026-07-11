@@ -86,9 +86,10 @@ dodaj subdomenę jako custom domain, dodaj wskazany rekord CNAME w DNS).
   osoby kontaktowe i historia (Historikk) jako tabela: Data / Kontaktet av / Med hvem / Type /
   Kommentar. Na desktopie (≥860px) podsumowanie+historia są w lewej kolumnie, kontaktpersoner w
   prawej; na telefonie wszystko jest pod sobą.
-- **Ikona ✎ w rogu popupu** — przełącza w tryb edycji: edytowalny formularz firmy, zarządzanie
-  osobami kontaktowymi (dodaj/edytuj/usuń/przenieś do innej firmy) i dodawanie nowych wpisów do
-  Historikk (data, z kim, rodzaj kontaktu — e-post/telefon/møte/annet, komentarz).
+- **Ikona ✎ w rogu popupu** — przełącza w tryb edycji: edytowalny formularz firmy (w tym Land i
+  Bransje — zaznaczane checkboxami, firma może mieć kilka branż naraz), zarządzanie osobami
+  kontaktowymi (dodaj/edytuj/usuń/przenieś do innej firmy) i dodawanie nowych wpisów do Historikk
+  (data, z kim, rodzaj kontaktu — e-post/telefon/møte/annet, komentarz).
 - **+ Ny firma** — od razu otwiera pusty formularz edycji (nie ma jeszcze czego podsumowywać).
 - Każda zmiana automatycznie zapisuje, kto i kiedy jej dokonał (widoczne w podsumowaniu firmy oraz
   przy każdym wpisie w Historikk) — ustawia to baza danych (trigger), więc nie da się tego
@@ -122,6 +123,13 @@ albo założyć drugie środowisko (np. staging) startujące od starszego stanu:
   treści starych notatek), `person_id` (z kim) i `contact_type` (rodzaj kontaktu).
 - `005_data_cleanup.sql` — poprawki dwóch niechlujnych rekordów z importu Excela (rozbity zapis
   dwóch osób w jednym polu, ujednolicona kapitalizacja jednego nazwiska).
+- `006_full_customer_base_merge.sql` — scalenie z drugim, bardziej rozbudowanym arkuszem Excel
+  (84 firmy łącznie). Dodaje `country` (Land) i `specialties`/`contact_specialties` (Fagområde,
+  wiele-do-wielu, np. firma może być jednocześnie „Bygg" i „Anlegg"). 13 firm z tego arkusza już
+  było w bazie (ten sam klient, wcześniejszy import) — dla nich dograno tylko kraj/branżę, bez
+  duplikowania osób czy historii. Pozostałe 71 firm zaimportowano w całości (firma + osoby
+  kontaktowe + pełna historia kontaktu, część sięgająca 2020 roku). Migracja jest bezpieczna do
+  ponownego uruchomienia (sprawdza `NOT EXISTS` po nazwie firmy przed importem).
 
 ## Dlaczego jest tabela `profiles` (i 3NF)
 

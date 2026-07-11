@@ -224,6 +224,18 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--yellow); bo
 .person-actions-buttons { display: flex; gap: 8px; }
 .checkbox-label { display: flex; flex-direction: row; align-items: center; gap: 6px; font-weight: 400; font-size: 13px; white-space: nowrap; }
 .checkbox-label input { width: auto; }
+
+.specialty-checkboxes {
+  display: flex; flex-wrap: wrap; gap: 6px 14px;
+  max-height: 140px; overflow-y: auto;
+  border: 1px solid var(--gray-line); border-radius: 8px;
+  padding: 10px 12px;
+}
+.specialty-checkboxes .checkbox-label { white-space: normal; }
+.specialty-tag {
+  display: inline-block; background: var(--gray-bg); color: var(--anthracite);
+  font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 999px; margin: 2px 4px 2px 0;
+}
 .person-form-new { background: var(--gray-bg); border-radius: 10px; padding: 12px 14px; }
 
 .activity-table-wrap { overflow-x: auto; margin: 12px 0; }

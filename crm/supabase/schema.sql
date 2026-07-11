@@ -1,6 +1,6 @@
 -- CRM Norma GS — schemat bazy danych dla Supabase
 -- Wklej cały ten plik w Supabase Dashboard -> SQL Editor -> Run
--- (dla instalacji od zera; dla istniejącej bazy zobacz migration_002_contact_people.sql)
+-- (dla instalacji od zera; dla istniejącej bazy zobacz pliki w migrations/)
 
 -- 1) profiles: publiczna, odpytywalna kopia (id, email) z auth.users.
 --    auth.users NIE jest dostępne z API/RLS dla zwykłych klientów, więc żeby móc
@@ -53,6 +53,7 @@ create table if not exists public.contacts (
   email text,
   website text,
   address text,
+  country text,
   status text not null default 'ny' check (status in ('ny', 'kontaktet', 'venter_svar', 'kunde', 'avslatt')),
   created_at timestamptz not null default now(),
   created_by uuid references public.profiles(id),
@@ -97,7 +98,22 @@ comment on column public.contact_activities.person_id is 'Hvilken kontaktperson 
 
 create index if not exists contact_activities_contact_id_idx on public.contact_activities(contact_id);
 
--- 5) Automatyczne ustawianie "kto i kiedy edytował" — niezależnie od tego co wyśle frontend
+-- 5) Branże (Fagområde): wiele-do-wielu, żeby "Bygg, Anlegg" i "Anlegg, Bygg" nie były
+--    dwoma różnymi ciągami tekstu tylko tymi samymi dwiema etykietami.
+create table if not exists public.specialties (
+  id uuid primary key default gen_random_uuid(),
+  name text not null unique
+);
+
+create table if not exists public.contact_specialties (
+  contact_id uuid not null references public.contacts(id) on delete cascade,
+  specialty_id uuid not null references public.specialties(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  created_by uuid references public.profiles(id),
+  primary key (contact_id, specialty_id)
+);
+
+-- 6) Automatyczne ustawianie "kto i kiedy edytował" — niezależnie od tego co wyśle frontend
 create or replace function public.set_contact_audit_fields()
 returns trigger
 language plpgsql
@@ -149,11 +165,19 @@ create trigger trg_activities_audit
   before insert on public.contact_activities
   for each row execute function public.set_activity_audit_fields();
 
--- 6) Row Level Security: tylko zalogowani użytkownicy (zaproszeni przez admina) mają dostęp.
+-- Ta sama (insert-only) funkcja audytowa nadaje się dla contact_specialties
+drop trigger if exists trg_contact_specialties_audit on public.contact_specialties;
+create trigger trg_contact_specialties_audit
+  before insert on public.contact_specialties
+  for each row execute function public.set_activity_audit_fields();
+
+-- 7) Row Level Security: tylko zalogowani użytkownicy (zaproszeni przez admina) mają dostęp.
 --    Brak ról — każdy zalogowany może odczytywać i edytować wszystko.
 alter table public.contacts enable row level security;
 alter table public.contact_people enable row level security;
 alter table public.contact_activities enable row level security;
+alter table public.specialties enable row level security;
+alter table public.contact_specialties enable row level security;
 
 drop policy if exists "authenticated can read contacts" on public.contacts;
 create policy "authenticated can read contacts" on public.contacts
@@ -197,4 +221,24 @@ create policy "authenticated can insert activities" on public.contact_activities
 
 drop policy if exists "authenticated can delete activities" on public.contact_activities;
 create policy "authenticated can delete activities" on public.contact_activities
+  for delete to authenticated using (true);
+
+drop policy if exists "authenticated can read specialties" on public.specialties;
+create policy "authenticated can read specialties" on public.specialties
+  for select to authenticated using (true);
+
+drop policy if exists "authenticated can insert specialties" on public.specialties;
+create policy "authenticated can insert specialties" on public.specialties
+  for insert to authenticated with check (true);
+
+drop policy if exists "authenticated can read contact_specialties" on public.contact_specialties;
+create policy "authenticated can read contact_specialties" on public.contact_specialties
+  for select to authenticated using (true);
+
+drop policy if exists "authenticated can insert contact_specialties" on public.contact_specialties;
+create policy "authenticated can insert contact_specialties" on public.contact_specialties
+  for insert to authenticated with check (true);
+
+drop policy if exists "authenticated can delete contact_specialties" on public.contact_specialties;
+create policy "authenticated can delete contact_specialties" on public.contact_specialties
   for delete to authenticated using (true);
