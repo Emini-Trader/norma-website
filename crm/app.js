@@ -252,9 +252,18 @@
 
   // ---------- Modal: view / edit contact ----------
 
+  let currentContact = null;
+
   els.newContactBtn.addEventListener("click", () => openModal(null));
   els.modalClose.addEventListener("click", closeModal);
-  els.modalCancel.addEventListener("click", closeModal);
+  els.modalCancel.addEventListener("click", () => {
+    if (currentContact) {
+      fillContact(currentContact);
+      setMode("view");
+    } else {
+      closeModal();
+    }
+  });
   els.modalEditBtn.addEventListener("click", () => setMode("edit"));
   els.modal.addEventListener("click", (e) => {
     if (e.target === els.modal) closeModal();
@@ -276,31 +285,35 @@
     renderActivities();
   }
 
+  function fillContact(contact) {
+    currentContact = contact;
+    els.modalTitle.textContent = contact.company_name;
+    els.contactId.value = contact.id;
+    els.fCompany.value = contact.company_name || "";
+    els.fPhone.value = contact.phone || "";
+    els.fEmail.value = contact.email || "";
+    els.fWebsite.value = contact.website || "";
+    els.fAddress.value = contact.address || "";
+    els.fStatus.value = contact.status || "ny";
+
+    els.vPhone.textContent = formatPhone(contact.phone) || "—";
+    els.vEmail.textContent = contact.email || "—";
+    if (contact.website) {
+      els.vWebsite.innerHTML = `<a href="${escapeHtml(websiteHref(contact.website))}" target="_blank" rel="noopener">${escapeHtml(contact.website)}</a>`;
+    } else {
+      els.vWebsite.textContent = "—";
+    }
+    els.vAddress.textContent = contact.address || "—";
+    els.vStatus.innerHTML = `<span class="status-badge status-${escapeHtml(contact.status)}">${escapeHtml(STATUS_LABELS[contact.status] || contact.status)}</span>`;
+  }
+
   function openModal(contact) {
     els.formError.hidden = true;
     els.contactForm.reset();
     els.personAddForm.reset();
     els.activityForm.reset();
     if (contact) {
-      els.modalTitle.textContent = contact.company_name;
-      els.contactId.value = contact.id;
-      els.fCompany.value = contact.company_name || "";
-      els.fPhone.value = contact.phone || "";
-      els.fEmail.value = contact.email || "";
-      els.fWebsite.value = contact.website || "";
-      els.fAddress.value = contact.address || "";
-      els.fStatus.value = contact.status || "ny";
-
-      els.vPhone.textContent = formatPhone(contact.phone) || "—";
-      els.vEmail.textContent = contact.email || "—";
-      if (contact.website) {
-        els.vWebsite.innerHTML = `<a href="${escapeHtml(websiteHref(contact.website))}" target="_blank" rel="noopener">${escapeHtml(contact.website)}</a>`;
-      } else {
-        els.vWebsite.textContent = "—";
-      }
-      els.vAddress.textContent = contact.address || "—";
-      els.vStatus.innerHTML = `<span class="status-badge status-${escapeHtml(contact.status)}">${escapeHtml(STATUS_LABELS[contact.status] || contact.status)}</span>`;
-
+      fillContact(contact);
       els.deleteBtn.hidden = false;
       els.peopleSection.hidden = false;
       els.activitySection.hidden = false;
@@ -308,6 +321,7 @@
       loadActivities(contact.id);
       setMode("view");
     } else {
+      currentContact = null;
       els.modalTitle.textContent = "Ny firma";
       els.contactId.value = "";
       els.fStatus.value = "ny";
@@ -340,8 +354,9 @@
       status: els.fStatus.value,
     };
 
+    const isUpdate = !!els.contactId.value;
     let error;
-    if (els.contactId.value) {
+    if (isUpdate) {
       ({ error } = await supabase.from("contacts").update(payload).eq("id", els.contactId.value));
     } else {
       ({ error } = await supabase.from("contacts").insert(payload));
@@ -353,8 +368,15 @@
       return;
     }
 
-    closeModal();
-    loadContacts();
+    await loadContacts();
+
+    if (isUpdate) {
+      const fresh = allContacts.find((c) => c.id === els.contactId.value);
+      if (fresh) fillContact(fresh);
+      setMode("view");
+    } else {
+      closeModal();
+    }
   });
 
   els.deleteBtn.addEventListener("click", async () => {
