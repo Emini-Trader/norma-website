@@ -126,7 +126,8 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--yellow); bo
   overflow-x: auto;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
-.contacts-table { width: 100%; border-collapse: collapse; min-width: 720px; }
+.contacts-table { width: 100%; border-collapse: collapse; min-width: 640px; }
+.contacts-table th:first-child, .contacts-table td:first-child { min-width: 260px; }
 .contacts-table th {
   text-align: left;
   font-family: var(--font-display);
@@ -181,18 +182,41 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--yellow); bo
   padding: 28px;
 }
 .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-.modal-header h2 { font-family: var(--font-display); margin: 0; font-size: 20px; }
+.modal-header h2 { font-family: var(--font-display); margin: 0; font-size: 20px; flex: 1; }
+.modal-header-actions { display: flex; align-items: center; gap: 4px; }
 .modal-form { display: flex; flex-direction: column; gap: 14px; }
 .form-row { display: flex; gap: 14px; }
 .form-row label { flex: 1; }
 .modal-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; }
 .modal-actions-right { display: flex; gap: 10px; }
 
+/* Podsumowanie (kun lesing) */
+.summary-list { margin: 0; }
+.summary-list > div { display: flex; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--gray-line); font-size: 14px; }
+.summary-list > div:last-child { border-bottom: none; }
+.summary-list dt { flex: 0 0 90px; color: var(--text-muted); font-size: 13px; }
+.summary-list dd { margin: 0; flex: 1; word-break: break-word; }
+.summary-list a { color: var(--anthracite); }
+
+.modal-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-areas: "summary" "people" "history";
+  gap: 0;
+}
+.modal-summary { grid-area: summary; }
+.people-section { grid-area: people; }
+.activity-section { grid-area: history; }
+
 .people-section, .activity-section { margin-top: 24px; border-top: 1px solid var(--gray-line); padding-top: 20px; }
 .people-section h3, .activity-section h3 { font-family: var(--font-display); margin: 0 0 4px; font-size: 16px; }
 
 .people-list { list-style: none; margin: 12px 0; padding: 0; display: flex; flex-direction: column; gap: 12px; max-height: 280px; overflow-y: auto; }
 .person-item { background: var(--gray-bg); border-radius: 10px; padding: 12px 14px; }
+.person-item-view { background: var(--gray-bg); border-radius: 10px; padding: 10px 14px; font-size: 14px; }
+.person-view-name { font-weight: 600; }
+.person-view-role { color: var(--text-muted); font-size: 13px; }
+.primary-badge { display: inline-block; font-size: 11px; font-weight: 600; color: var(--yellow-deep); }
 .person-form { display: flex; flex-direction: column; gap: 8px; }
 .person-form input, .person-form select { font-size: 13px; padding: 8px 10px; }
 .person-form-footer, .person-actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
@@ -200,13 +224,37 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--yellow); bo
 .checkbox-label { display: flex; flex-direction: row; align-items: center; gap: 6px; font-weight: 400; font-size: 13px; white-space: nowrap; }
 .checkbox-label input { width: auto; }
 .person-form-new { background: var(--gray-bg); border-radius: 10px; padding: 12px 14px; }
-.activity-list { list-style: none; margin: 12px 0; padding: 0; display: flex; flex-direction: column; gap: 10px; max-height: 220px; overflow-y: auto; }
-.activity-item { background: var(--gray-bg); border-radius: 10px; padding: 10px 14px; font-size: 14px; }
-.activity-item .activity-meta { display: block; font-size: 12px; color: var(--text-muted); margin-top: 4px; }
-.activity-form { display: flex; gap: 10px; align-items: flex-start; }
-.activity-form textarea { flex: 1; min-height: 60px; resize: vertical; }
+
+.activity-table-wrap { overflow-x: auto; margin: 12px 0; }
+.activity-table { width: 100%; border-collapse: collapse; min-width: 480px; font-size: 13px; }
+.activity-table th {
+  text-align: left;
+  font-family: var(--font-display);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--gray-line);
+}
+.activity-table td { padding: 8px 10px; border-bottom: 1px solid var(--gray-line); vertical-align: top; }
+.activity-table tbody tr:last-child td { border-bottom: none; }
+
+.activity-form { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+.activity-form select, .activity-form input[type="date"] { font-size: 13px; padding: 8px 10px; }
+.activity-form textarea { min-height: 60px; resize: vertical; }
 
 @media (max-width: 560px) {
   .form-row { flex-direction: column; }
   .toolbar { flex-direction: column; }
+}
+
+@media (min-width: 860px) {
+  .modal { max-width: 900px; }
+  .modal-grid {
+    grid-template-columns: 1.15fr 0.85fr;
+    column-gap: 32px;
+    grid-template-areas: "summary people" "history people";
+  }
+  .people-section { margin-top: 0; border-top: none; border-left: 1px solid var(--gray-line); padding-top: 0; padding-left: 28px; }
 }

@@ -24,6 +24,13 @@
     avslatt: "Avslått",
   };
 
+  const CONTACT_TYPE_LABELS = {
+    epost: "E-post",
+    telefon: "Telefon",
+    mote: "Møte",
+    annet: "Annet",
+  };
+
   const els = {
     loginView: document.getElementById("login-view"),
     appView: document.getElementById("app-view"),
@@ -40,8 +47,15 @@
     tbody: document.getElementById("contacts-tbody"),
     modal: document.getElementById("contact-modal"),
     modalTitle: document.getElementById("modal-title"),
+    modalEditBtn: document.getElementById("modal-edit-btn"),
     modalClose: document.getElementById("modal-close"),
     modalCancel: document.getElementById("modal-cancel"),
+    viewSummary: document.getElementById("view-summary"),
+    vPhone: document.getElementById("v-phone"),
+    vEmail: document.getElementById("v-email"),
+    vWebsite: document.getElementById("v-website"),
+    vAddress: document.getElementById("v-address"),
+    vStatus: document.getElementById("v-status"),
     contactForm: document.getElementById("contact-form"),
     formError: document.getElementById("form-error"),
     contactId: document.getElementById("contact-id"),
@@ -53,6 +67,7 @@
     fStatus: document.getElementById("f-status"),
     deleteBtn: document.getElementById("delete-contact-btn"),
     peopleSection: document.getElementById("people-section"),
+    peopleHint: document.getElementById("people-hint"),
     peopleList: document.getElementById("people-list"),
     personAddForm: document.getElementById("person-add-form"),
     pNewName: document.getElementById("p-new-name"),
@@ -61,13 +76,17 @@
     pNewEmail: document.getElementById("p-new-email"),
     pNewPrimary: document.getElementById("p-new-primary"),
     activitySection: document.getElementById("activity-section"),
-    activityList: document.getElementById("activity-list"),
+    activityTbody: document.getElementById("activity-tbody"),
     activityForm: document.getElementById("activity-form"),
+    activityDate: document.getElementById("activity-date"),
+    activityPerson: document.getElementById("activity-person"),
+    activityType: document.getElementById("activity-type"),
     activityNote: document.getElementById("activity-note"),
   };
 
   let allContacts = [];
   let primaryContactNames = {}; // contact_id -> navn på hovedkontakt, for tabellvisning/søk
+  let modalMode = "view"; // "view" (kun lesing) eller "edit"
 
   function escapeHtml(str) {
     if (str == null) return "";
@@ -81,10 +100,36 @@
     return profile.first_name || profile.email || "";
   }
 
+  function formatPhone(raw) {
+    if (!raw) return "";
+    return raw.replace(/^tel[:.]?\s*/i, "").trim();
+  }
+
   function formatDateTime(iso) {
     if (!iso) return "";
     const d = new Date(iso);
     return d.toLocaleString("no-NO", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
+  }
+
+  function formatDateOnly(iso) {
+    if (!iso) return "";
+    const d = new Date(iso);
+    return d.toLocaleDateString("no-NO", { day: "2-digit", month: "2-digit", year: "numeric" });
+  }
+
+  function formatDate(dateStr) {
+    if (!dateStr) return "";
+    const [y, m, d] = dateStr.split("-");
+    return `${d}.${m}.${y}`;
+  }
+
+  function todayStr() {
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  function websiteHref(url) {
+    if (!url) return "";
+    return /^https?:\/\//i.test(url) ? url : "https://" + url;
   }
 
   // ---------- Auth ----------
@@ -140,7 +185,7 @@
   // ---------- Load & render contacts ----------
 
   async function loadContacts() {
-    els.tbody.innerHTML = '<tr><td colspan="6" class="loading-row">Laster…</td></tr>';
+    els.tbody.innerHTML = '<tr><td colspan="5" class="loading-row">Laster…</td></tr>';
     const [{ data, error }, peopleRes] = await Promise.all([
       supabase
         .from("contacts")
@@ -150,7 +195,7 @@
     ]);
 
     if (error) {
-      els.tbody.innerHTML = `<tr><td colspan="6" class="empty-row">Feil ved lasting: ${escapeHtml(error.message)}</td></tr>`;
+      els.tbody.innerHTML = `<tr><td colspan="5" class="empty-row">Feil ved lasting: ${escapeHtml(error.message)}</td></tr>`;
       return;
     }
     allContacts = data || [];
@@ -180,7 +225,7 @@
     });
 
     if (filtered.length === 0) {
-      els.tbody.innerHTML = '<tr><td colspan="6" class="empty-row">Ingen treff.</td></tr>';
+      els.tbody.innerHTML = '<tr><td colspan="5" class="empty-row">Ingen treff.</td></tr>';
       return;
     }
 
@@ -188,10 +233,9 @@
       <tr data-id="${escapeHtml(c.id)}">
         <td class="company-cell">${escapeHtml(c.company_name)}</td>
         <td>${escapeHtml((primaryContactNames[c.id] || {}).name)}</td>
-        <td>${escapeHtml(c.phone)}</td>
-        <td>${escapeHtml(c.email)}</td>
+        <td>${escapeHtml(formatPhone(c.phone))}</td>
         <td><span class="status-badge status-${escapeHtml(c.status)}">${escapeHtml(STATUS_LABELS[c.status] || c.status)}</span></td>
-        <td class="meta-cell">${formatDateTime(c.updated_at)}<br>${escapeHtml(editorName(c.updated_by_profile))}</td>
+        <td class="meta-cell">${formatDateOnly(c.updated_at)}</td>
       </tr>
     `).join("");
   }
@@ -206,18 +250,37 @@
     if (contact) openModal(contact);
   });
 
-  // ---------- Modal: create / edit contact ----------
+  // ---------- Modal: view / edit contact ----------
 
   els.newContactBtn.addEventListener("click", () => openModal(null));
   els.modalClose.addEventListener("click", closeModal);
   els.modalCancel.addEventListener("click", closeModal);
+  els.modalEditBtn.addEventListener("click", () => setMode("edit"));
   els.modal.addEventListener("click", (e) => {
     if (e.target === els.modal) closeModal();
   });
 
+  function setMode(mode) {
+    modalMode = mode;
+    const isEdit = mode === "edit";
+    els.viewSummary.hidden = isEdit;
+    els.contactForm.hidden = !isEdit;
+    els.modalEditBtn.hidden = isEdit || !els.contactId.value;
+    els.peopleHint.hidden = !isEdit;
+    els.personAddForm.hidden = !isEdit;
+    els.activityForm.hidden = !isEdit;
+    if (isEdit && !els.activityDate.value) {
+      els.activityDate.value = todayStr();
+    }
+    renderPeople();
+    renderActivities();
+  }
+
   function openModal(contact) {
     els.formError.hidden = true;
     els.contactForm.reset();
+    els.personAddForm.reset();
+    els.activityForm.reset();
     if (contact) {
       els.modalTitle.textContent = contact.company_name;
       els.contactId.value = contact.id;
@@ -227,11 +290,23 @@
       els.fWebsite.value = contact.website || "";
       els.fAddress.value = contact.address || "";
       els.fStatus.value = contact.status || "ny";
+
+      els.vPhone.textContent = formatPhone(contact.phone) || "—";
+      els.vEmail.textContent = contact.email || "—";
+      if (contact.website) {
+        els.vWebsite.innerHTML = `<a href="${escapeHtml(websiteHref(contact.website))}" target="_blank" rel="noopener">${escapeHtml(contact.website)}</a>`;
+      } else {
+        els.vWebsite.textContent = "—";
+      }
+      els.vAddress.textContent = contact.address || "—";
+      els.vStatus.innerHTML = `<span class="status-badge status-${escapeHtml(contact.status)}">${escapeHtml(STATUS_LABELS[contact.status] || contact.status)}</span>`;
+
       els.deleteBtn.hidden = false;
       els.peopleSection.hidden = false;
       els.activitySection.hidden = false;
       loadPeople(contact.id);
       loadActivities(contact.id);
+      setMode("view");
     } else {
       els.modalTitle.textContent = "Ny firma";
       els.contactId.value = "";
@@ -240,7 +315,10 @@
       els.peopleSection.hidden = true;
       els.peopleList.innerHTML = "";
       els.activitySection.hidden = true;
-      els.activityList.innerHTML = "";
+      els.activityTbody.innerHTML = "";
+      currentPeople = [];
+      currentActivities = [];
+      setMode("edit");
     }
     els.modal.hidden = false;
   }
@@ -304,6 +382,13 @@
       .join("");
   }
 
+  function populateActivityPersonSelect() {
+    const current = els.activityPerson.value;
+    els.activityPerson.innerHTML = '<option value="">Med hvem (valgfritt)</option>' +
+      currentPeople.map((p) => `<option value="${escapeHtml(p.id)}">${escapeHtml(p.full_name)}</option>`).join("");
+    els.activityPerson.value = current;
+  }
+
   async function loadPeople(contactId) {
     els.peopleList.innerHTML = "<li>Laster…</li>";
     const { data, error } = await supabase
@@ -318,6 +403,7 @@
       return;
     }
     currentPeople = data || [];
+    populateActivityPersonSelect();
     renderPeople();
   }
 
@@ -326,6 +412,18 @@
       els.peopleList.innerHTML = "<li>Ingen kontaktpersoner ennå.</li>";
       return;
     }
+
+    if (modalMode !== "edit") {
+      els.peopleList.innerHTML = currentPeople.map((p) => `
+        <li class="person-item-view">
+          <div class="person-view-name">${escapeHtml(p.full_name)}${p.is_primary ? ' <span class="primary-badge">Hovedkontakt</span>' : ""}</div>
+          ${p.role ? `<div class="person-view-role">${escapeHtml(p.role)}</div>` : ""}
+          <div class="meta-cell">${escapeHtml(formatPhone(p.phone))} ${p.phone && p.email ? "·" : ""} ${escapeHtml(p.email)}</div>
+        </li>
+      `).join("");
+      return;
+    }
+
     els.peopleList.innerHTML = currentPeople.map((p) => `
       <li class="person-item" data-id="${escapeHtml(p.id)}">
         <form class="person-form">
@@ -414,29 +512,40 @@
     loadContacts();
   });
 
-  // ---------- Activity log ----------
+  // ---------- Activity log (Historikk) ----------
+
+  let currentActivities = [];
 
   async function loadActivities(contactId) {
-    els.activityList.innerHTML = "<li>Laster…</li>";
+    els.activityTbody.innerHTML = '<tr><td colspan="5">Laster…</td></tr>';
     const { data, error } = await supabase
       .from("contact_activities")
-      .select("*, created_by_profile:profiles!created_by(first_name, email)")
+      .select("*, created_by_profile:profiles!created_by(first_name, email), person:contact_people!person_id(full_name)")
       .eq("contact_id", contactId)
+      .order("occurred_at", { ascending: false })
       .order("created_at", { ascending: false });
 
     if (error) {
-      els.activityList.innerHTML = `<li>Feil: ${escapeHtml(error.message)}</li>`;
+      els.activityTbody.innerHTML = `<tr><td colspan="5">Feil: ${escapeHtml(error.message)}</td></tr>`;
       return;
     }
-    if (!data || data.length === 0) {
-      els.activityList.innerHTML = "<li>Ingen notater ennå.</li>";
+    currentActivities = data || [];
+    renderActivities();
+  }
+
+  function renderActivities() {
+    if (currentActivities.length === 0) {
+      els.activityTbody.innerHTML = '<tr><td colspan="5" class="empty-row">Ingen historikk ennå.</td></tr>';
       return;
     }
-    els.activityList.innerHTML = data.map((a) => `
-      <li class="activity-item">
-        ${escapeHtml(a.note)}
-        <span class="activity-meta">${escapeHtml(editorName(a.created_by_profile))} · ${formatDateTime(a.created_at)}</span>
-      </li>
+    els.activityTbody.innerHTML = currentActivities.map((a) => `
+      <tr>
+        <td>${formatDate(a.occurred_at)}</td>
+        <td>${escapeHtml(editorName(a.created_by_profile))}</td>
+        <td>${escapeHtml((a.person || {}).full_name)}</td>
+        <td>${escapeHtml(CONTACT_TYPE_LABELS[a.contact_type] || a.contact_type)}</td>
+        <td>${escapeHtml(a.note)}</td>
+      </tr>
     `).join("");
   }
 
@@ -448,6 +557,9 @@
 
     const { error } = await supabase.from("contact_activities").insert({
       contact_id: contactId,
+      occurred_at: els.activityDate.value || todayStr(),
+      person_id: els.activityPerson.value || null,
+      contact_type: els.activityType.value,
       note,
     });
     if (error) {
@@ -455,8 +567,9 @@
       return;
     }
     els.activityNote.value = "";
+    els.activityDate.value = todayStr();
+    els.activityPerson.value = "";
     loadActivities(contactId);
-    loadContacts(); // updated_at endres ikke her, men holder lista i sync
   });
 
   checkSession();

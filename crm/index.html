@@ -58,13 +58,12 @@
           <th>Firma</th>
           <th>Kontaktperson</th>
           <th>Telefon</th>
-          <th>E-post</th>
           <th>Status</th>
           <th>Sist endret</th>
         </tr>
       </thead>
       <tbody id="contacts-tbody">
-        <tr><td colspan="6" class="loading-row">Laster…</td></tr>
+        <tr><td colspan="5" class="loading-row">Laster…</td></tr>
       </tbody>
     </table>
   </div>
@@ -74,78 +73,119 @@
   <div class="modal">
     <div class="modal-header">
       <h2 id="modal-title">Firma</h2>
-      <button id="modal-close" class="btn-icon" aria-label="Lukk">✕</button>
+      <div class="modal-header-actions">
+        <button id="modal-edit-btn" class="btn-icon" aria-label="Rediger" title="Rediger" hidden>✎</button>
+        <button id="modal-close" class="btn-icon" aria-label="Lukk">✕</button>
+      </div>
     </div>
 
-    <form id="contact-form" class="modal-form">
-      <input type="hidden" id="contact-id">
-      <label>Firmanavn *
-        <input type="text" id="f-company" required>
-      </label>
-      <div class="form-row">
-        <label>Telefon
-          <input type="text" id="f-phone">
-        </label>
-        <label>E-post
-          <input type="email" id="f-email">
-        </label>
+    <div class="modal-grid">
+      <div id="view-summary" class="modal-summary view-summary">
+        <dl class="summary-list">
+          <div><dt>Telefon</dt><dd id="v-phone">—</dd></div>
+          <div><dt>E-post</dt><dd id="v-email">—</dd></div>
+          <div><dt>Nettside</dt><dd id="v-website">—</dd></div>
+          <div><dt>Adresse</dt><dd id="v-address">—</dd></div>
+          <div><dt>Status</dt><dd id="v-status">—</dd></div>
+        </dl>
       </div>
-      <label>Nettside
-        <input type="text" id="f-website">
-      </label>
-      <label>Adresse
-        <input type="text" id="f-address">
-      </label>
-      <label>Status
-        <select id="f-status">
-          <option value="ny">Ny</option>
-          <option value="kontaktet">Kontaktet</option>
-          <option value="venter_svar">Venter på svar</option>
-          <option value="kunde">Kunde</option>
-          <option value="avslatt">Avslått</option>
-        </select>
-      </label>
 
-      <div class="modal-actions">
-        <button type="button" id="delete-contact-btn" class="btn-danger" hidden>Slett firma</button>
-        <div class="modal-actions-right">
-          <button type="button" id="modal-cancel" class="btn-ghost">Avbryt</button>
-          <button type="submit" class="btn-primary">Lagre</button>
-        </div>
-      </div>
-      <p id="form-error" class="error" hidden></p>
-    </form>
-
-    <section id="people-section" class="people-section" hidden>
-      <h3>Kontaktpersoner</h3>
-      <p class="hint">En firma kan ha flere kontaktpersoner. Bytter noen jobb, flytt dem til riktig firma i stedet for å opprette en ny person.</p>
-      <ul id="people-list" class="people-list"></ul>
-
-      <form id="person-add-form" class="person-form person-form-new">
+      <form id="contact-form" class="modal-form modal-summary" hidden>
+        <input type="hidden" id="contact-id">
+        <label>Firmanavn *
+          <input type="text" id="f-company" required>
+        </label>
         <div class="form-row">
-          <input type="text" id="p-new-name" placeholder="Navn *" required>
-          <input type="text" id="p-new-role" placeholder="Stilling">
+          <label>Telefon
+            <input type="text" id="f-phone">
+          </label>
+          <label>E-post
+            <input type="email" id="f-email">
+          </label>
         </div>
-        <div class="form-row">
-          <input type="text" id="p-new-phone" placeholder="Telefon">
-          <input type="email" id="p-new-email" placeholder="E-post">
-        </div>
-        <div class="form-row person-form-footer">
-          <label class="checkbox-label"><input type="checkbox" id="p-new-primary"> Hovedkontakt</label>
-          <button type="submit" class="btn-primary">+ Legg til person</button>
-        </div>
-      </form>
-    </section>
+        <label>Nettside
+          <input type="text" id="f-website">
+        </label>
+        <label>Adresse
+          <input type="text" id="f-address">
+        </label>
+        <label>Status
+          <select id="f-status">
+            <option value="ny">Ny</option>
+            <option value="kontaktet">Kontaktet</option>
+            <option value="venter_svar">Venter på svar</option>
+            <option value="kunde">Kunde</option>
+            <option value="avslatt">Avslått</option>
+          </select>
+        </label>
 
-    <section id="activity-section" class="activity-section" hidden>
-      <h3>Historikk</h3>
-      <p class="hint">Alle henvendelser og notater, med hvem som skrev dem og når.</p>
-      <ul id="activity-list" class="activity-list"></ul>
-      <form id="activity-form" class="activity-form">
-        <textarea id="activity-note" placeholder="Legg til notat (f.eks. «ringte, ingen svar» eller «sendt tilbud 11.07.2026»)" required></textarea>
-        <button type="submit" class="btn-primary">Legg til notat</button>
+        <div class="modal-actions">
+          <button type="button" id="delete-contact-btn" class="btn-danger" hidden>Slett firma</button>
+          <div class="modal-actions-right">
+            <button type="button" id="modal-cancel" class="btn-ghost">Avbryt</button>
+            <button type="submit" class="btn-primary">Lagre</button>
+          </div>
+        </div>
+        <p id="form-error" class="error" hidden></p>
       </form>
-    </section>
+
+      <section id="people-section" class="people-section" hidden>
+        <h3>Kontaktpersoner</h3>
+        <p id="people-hint" class="hint" hidden>En firma kan ha flere kontaktpersoner. Bytter noen jobb, flytt dem til riktig firma i stedet for å opprette en ny person.</p>
+        <ul id="people-list" class="people-list"></ul>
+
+        <form id="person-add-form" class="person-form person-form-new" hidden>
+          <div class="form-row">
+            <input type="text" id="p-new-name" placeholder="Navn *" required>
+            <input type="text" id="p-new-role" placeholder="Stilling">
+          </div>
+          <div class="form-row">
+            <input type="text" id="p-new-phone" placeholder="Telefon">
+            <input type="email" id="p-new-email" placeholder="E-post">
+          </div>
+          <div class="form-row person-form-footer">
+            <label class="checkbox-label"><input type="checkbox" id="p-new-primary"> Hovedkontakt</label>
+            <button type="submit" class="btn-primary">+ Legg til person</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="activity-section" class="activity-section" hidden>
+        <h3>Historikk</h3>
+        <p class="hint">Alle henvendelser, med hvem som ble kontaktet og når.</p>
+        <div class="activity-table-wrap">
+          <table class="activity-table">
+            <thead>
+              <tr>
+                <th>Dato</th>
+                <th>Kontaktet av</th>
+                <th>Med hvem</th>
+                <th>Type</th>
+                <th>Kommentar</th>
+              </tr>
+            </thead>
+            <tbody id="activity-tbody"></tbody>
+          </table>
+        </div>
+
+        <form id="activity-form" class="activity-form" hidden>
+          <div class="form-row">
+            <input type="date" id="activity-date" required>
+            <select id="activity-person">
+              <option value="">Med hvem (valgfritt)</option>
+            </select>
+            <select id="activity-type">
+              <option value="epost">E-post</option>
+              <option value="telefon">Telefon</option>
+              <option value="mote">Møte</option>
+              <option value="annet">Annet</option>
+            </select>
+          </div>
+          <textarea id="activity-note" placeholder="Kommentar (f.eks. «ringte, ingen svar» eller «sendt tilbud»)" required></textarea>
+          <button type="submit" class="btn-primary">+ Legg til</button>
+        </form>
+      </section>
+    </div>
   </div>
 </div>
 

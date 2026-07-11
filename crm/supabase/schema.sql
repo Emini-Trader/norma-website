@@ -84,10 +84,16 @@ create index if not exists contact_people_contact_id_idx on public.contact_peopl
 create table if not exists public.contact_activities (
   id uuid primary key default gen_random_uuid(),
   contact_id uuid not null references public.contacts(id) on delete cascade,
+  occurred_at date not null default current_date,
+  person_id uuid references public.contact_people(id) on delete set null,
+  contact_type text not null default 'annet' check (contact_type in ('epost', 'telefon', 'mote', 'annet')),
   note text not null,
   created_at timestamptz not null default now(),
   created_by uuid references public.profiles(id)
 );
+
+comment on column public.contact_activities.contact_type is 'epost=E-post, telefon=Telefon, mote=Møte, annet=Annet';
+comment on column public.contact_activities.person_id is 'Hvilken kontaktperson (contact_people) kontakten var med - kan være NULL';
 
 create index if not exists contact_activities_contact_id_idx on public.contact_activities(contact_id);
 

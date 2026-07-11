@@ -82,13 +82,18 @@ dodaj subdomenę jako custom domain, dodaj wskazany rekord CNAME w DNS).
 - **Logowanie** — e-mail + hasło nadane przez administratora (patrz krok 3).
 - **Lista firm** — szukaj po nazwie/kontakcie/e-mailu, filtruj po statusie (Ny / Kontaktet /
   Venter på svar / Kunde / Avslått).
-- **Klik na wiersz** — otwiera szczegóły firmy do edycji oraz historię notatek (kto i kiedy
-  dodał wpis — to jest odpowiednik dotychczasowej kolumny „Kommentarer”, ale jako pełna historia
-  zamiast jednego pola).
-- **+ Ny firma** — dodaje nową firmę do listy.
-- Każda zmiana automatycznie zapisuje, kto i kiedy jej dokonał (widoczne w kolumnie „Sist endret”
-  oraz przy każdym wpisie w historii) — ustawia to baza danych (trigger), więc nie da się tego
-  sfałszować z poziomu przeglądarki.
+- **Klik na wiersz** — otwiera popup z podsumowaniem firmy (tylko do odczytu): dane kontaktowe,
+  osoby kontaktowe i historia (Historikk) jako tabela: Data / Kontaktet av / Med hvem / Type /
+  Kommentar. Na desktopie (≥860px) podsumowanie+historia są w lewej kolumnie, kontaktpersoner w
+  prawej; na telefonie wszystko jest pod sobą.
+- **Ikona ✎ w rogu popupu** — przełącza w tryb edycji: edytowalny formularz firmy, zarządzanie
+  osobami kontaktowymi (dodaj/edytuj/usuń/przenieś do innej firmy) i dodawanie nowych wpisów do
+  Historikk (data, z kim, rodzaj kontaktu — e-post/telefon/møte/annet, komentarz).
+- **+ Ny firma** — od razu otwiera pusty formularz edycji (nie ma jeszcze czego podsumowywać).
+- Każda zmiana automatycznie zapisuje, kto i kiedy jej dokonał (widoczne w podsumowaniu firmy oraz
+  przy każdym wpisie w Historikk) — ustawia to baza danych (trigger), więc nie da się tego
+  sfałszować z poziomu przeglądarki. Lista firm pokazuje tylko datę ostatniej zmiany, żeby nie była
+  przeładowana.
 
 ## Kontaktpersoner (jedna firma, wiele osób)
 
@@ -113,6 +118,10 @@ albo założyć drugie środowisko (np. staging) startujące od starszego stanu:
   poprawka 3NF (tabela `profiles` zamiast zdenormalizowanych `*_email` w każdej tabeli).
 - `003_profile_names.sql` — dodanie `first_name`/`last_name` do `profiles`, żeby w CRM pokazywać imię
   zamiast e-maila.
+- `004_activity_details.sql` — rozbudowa Historikk o `occurred_at` (data kontaktu, wyciągnięta z
+  treści starych notatek), `person_id` (z kim) i `contact_type` (rodzaj kontaktu).
+- `005_data_cleanup.sql` — poprawki dwóch niechlujnych rekordów z importu Excela (rozbity zapis
+  dwóch osób w jednym polu, ujednolicona kapitalizacja jednego nazwiska).
 
 ## Dlaczego jest tabela `profiles` (i 3NF)
 
