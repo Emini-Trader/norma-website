@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Norma GS — CRM</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <span class="brand">NORMA <span class="brand-accent">CRM</span></span>
+    <div id="user-box" class="user-box" hidden>
+      <span id="user-email"></span>
+      <button id="logout-btn" class="btn-ghost">Logg ut</button>
+    </div>
+  </div>
+</header>
+
+<main id="login-view" class="login-view">
+  <form id="login-form" class="login-card">
+    <h1>Logg inn</h1>
+    <p class="hint">Bruk kontoen du har fått tildelt.</p>
+    <label>E-post
+      <input type="email" id="login-email" required autocomplete="username">
+    </label>
+    <label>Passord
+      <input type="password" id="login-password" required autocomplete="current-password">
+    </label>
+    <button type="submit" class="btn-primary">Logg inn</button>
+    <p id="login-error" class="error" hidden></p>
+  </form>
+</main>
+
+<main id="app-view" class="app-view" hidden>
+  <div class="toolbar">
+    <input type="search" id="search-input" placeholder="Søk etter firma, kontaktperson, e-post…">
+    <select id="status-filter">
+      <option value="">Alle statuser</option>
+      <option value="ny">Ny</option>
+      <option value="kontaktet">Kontaktet</option>
+      <option value="venter_svar">Venter på svar</option>
+      <option value="kunde">Kunde</option>
+      <option value="avslatt">Avslått</option>
+    </select>
+    <button id="new-contact-btn" class="btn-primary">+ Ny firma</button>
+  </div>
+
+  <div id="contacts-table-wrap" class="table-wrap">
+    <table class="contacts-table">
+      <thead>
+        <tr>
+          <th>Firma</th>
+          <th>Kontaktperson</th>
+          <th>Telefon</th>
+          <th>E-post</th>
+          <th>Status</th>
+          <th>Sist endret</th>
+        </tr>
+      </thead>
+      <tbody id="contacts-tbody">
+        <tr><td colspan="6" class="loading-row">Laster…</td></tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<div id="contact-modal" class="modal-backdrop" hidden>
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modal-title">Firma</h2>
+      <button id="modal-close" class="btn-icon" aria-label="Lukk">✕</button>
+    </div>
+
+    <form id="contact-form" class="modal-form">
+      <input type="hidden" id="contact-id">
+      <label>Firmanavn *
+        <input type="text" id="f-company" required>
+      </label>
+      <div class="form-row">
+        <label>Telefon
+          <input type="text" id="f-phone">
+        </label>
+        <label>E-post
+          <input type="email" id="f-email">
+        </label>
+      </div>
+      <div class="form-row">
+        <label>Nettside
+          <input type="text" id="f-website">
+        </label>
+        <label>Kontaktperson
+          <input type="text" id="f-person">
+        </label>
+      </div>
+      <label>Adresse
+        <input type="text" id="f-address">
+      </label>
+      <label>Status
+        <select id="f-status">
+          <option value="ny">Ny</option>
+          <option value="kontaktet">Kontaktet</option>
+          <option value="venter_svar">Venter på svar</option>
+          <option value="kunde">Kunde</option>
+          <option value="avslatt">Avslått</option>
+        </select>
+      </label>
+
+      <div class="modal-actions">
+        <button type="button" id="delete-contact-btn" class="btn-danger" hidden>Slett firma</button>
+        <div class="modal-actions-right">
+          <button type="button" id="modal-cancel" class="btn-ghost">Avbryt</button>
+          <button type="submit" class="btn-primary">Lagre</button>
+        </div>
+      </div>
+      <p id="form-error" class="error" hidden></p>
+    </form>
+
+    <section id="activity-section" class="activity-section" hidden>
+      <h3>Historikk</h3>
+      <p class="hint">Alle henvendelser og notater, med hvem som skrev dem og når.</p>
+      <ul id="activity-list" class="activity-list"></ul>
+      <form id="activity-form" class="activity-form">
+        <textarea id="activity-note" placeholder="Legg til notat (f.eks. «ringte, ingen svar» eller «sendt tilbud 11.07.2026»)" required></textarea>
+        <button type="submit" class="btn-primary">Legg til notat</button>
+      </form>
+    </section>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
