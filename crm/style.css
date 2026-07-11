@@ -188,8 +188,18 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--yellow); bo
 .modal-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; }
 .modal-actions-right { display: flex; gap: 10px; }
 
-.activity-section { margin-top: 24px; border-top: 1px solid var(--gray-line); padding-top: 20px; }
-.activity-section h3 { font-family: var(--font-display); margin: 0 0 4px; font-size: 16px; }
+.people-section, .activity-section { margin-top: 24px; border-top: 1px solid var(--gray-line); padding-top: 20px; }
+.people-section h3, .activity-section h3 { font-family: var(--font-display); margin: 0 0 4px; font-size: 16px; }
+
+.people-list { list-style: none; margin: 12px 0; padding: 0; display: flex; flex-direction: column; gap: 12px; max-height: 280px; overflow-y: auto; }
+.person-item { background: var(--gray-bg); border-radius: 10px; padding: 12px 14px; }
+.person-form { display: flex; flex-direction: column; gap: 8px; }
+.person-form input, .person-form select { font-size: 13px; padding: 8px 10px; }
+.person-form-footer, .person-actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.person-actions-buttons { display: flex; gap: 8px; }
+.checkbox-label { display: flex; flex-direction: row; align-items: center; gap: 6px; font-weight: 400; font-size: 13px; white-space: nowrap; }
+.checkbox-label input { width: auto; }
+.person-form-new { background: var(--gray-bg); border-radius: 10px; padding: 12px 14px; }
 .activity-list { list-style: none; margin: 12px 0; padding: 0; display: flex; flex-direction: column; gap: 10px; max-height: 220px; overflow-y: auto; }
 .activity-item { background: var(--gray-bg); border-radius: 10px; padding: 10px 14px; font-size: 14px; }
 .activity-item .activity-meta { display: block; font-size: 12px; color: var(--text-muted); margin-top: 4px; }

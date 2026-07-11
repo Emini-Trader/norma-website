@@ -90,6 +90,20 @@ dodaj subdomenę jako custom domain, dodaj wskazany rekord CNAME w DNS).
   oraz przy każdym wpisie w historii) — ustawia to baza danych (trigger), więc nie da się tego
   sfałszować z poziomu przeglądarki.
 
+## Kontaktpersoner (jedna firma, wiele osób)
+
+Firma ma teraz osobną listę kontaktpersonów (tabela `contact_people`), a nie jedno pole tekstowe —
+każda osoba ma własny telefon/e-mail/stanowisko i może być oznaczona jako „Hovedkontakt" (główny
+kontakt, widoczny w tabeli firm). Jeśli osoba zmienia firmę, w jej wierszu zmień pole „Firma"
+(select w sekcji „Kontaktpersoner" w modalu) — to zwykły `UPDATE`, nie zapisujemy historii
+zatrudnienia.
+
+**Jeśli aktualizujesz istniejące wdrożenie CRM** (baza już ma dane z wcześniejszej wersji z jednym
+polem „Kontaktperson"): uruchom w Supabase SQL Editor plik
+[`supabase/migration_002_contact_people.sql`](supabase/migration_002_contact_people.sql) **zanim**
+wdrożysz nową wersję frontendu — przenosi on istniejące dane do nowej tabeli i usuwa stare pole.
+Kolejność ma znaczenie: nowy frontend zakłada, że tabela `contact_people` już istnieje.
+
 ## Dodawanie/usuwanie użytkowników później
 
 Wykonuje się to wyłącznie w panelu Supabase (**Authentication → Users**), nie w kodzie aplikacji —

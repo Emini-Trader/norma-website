@@ -90,14 +90,9 @@
           <input type="email" id="f-email">
         </label>
       </div>
-      <div class="form-row">
-        <label>Nettside
-          <input type="text" id="f-website">
-        </label>
-        <label>Kontaktperson
-          <input type="text" id="f-person">
-        </label>
-      </div>
+      <label>Nettside
+        <input type="text" id="f-website">
+      </label>
       <label>Adresse
         <input type="text" id="f-address">
       </label>
@@ -120,6 +115,27 @@
       </div>
       <p id="form-error" class="error" hidden></p>
     </form>
+
+    <section id="people-section" class="people-section" hidden>
+      <h3>Kontaktpersoner</h3>
+      <p class="hint">En firma kan ha flere kontaktpersoner. Bytter noen jobb, flytt dem til riktig firma i stedet for å opprette en ny person.</p>
+      <ul id="people-list" class="people-list"></ul>
+
+      <form id="person-add-form" class="person-form person-form-new">
+        <div class="form-row">
+          <input type="text" id="p-new-name" placeholder="Navn *" required>
+          <input type="text" id="p-new-role" placeholder="Stilling">
+        </div>
+        <div class="form-row">
+          <input type="text" id="p-new-phone" placeholder="Telefon">
+          <input type="email" id="p-new-email" placeholder="E-post">
+        </div>
+        <div class="form-row person-form-footer">
+          <label class="checkbox-label"><input type="checkbox" id="p-new-primary"> Hovedkontakt</label>
+          <button type="submit" class="btn-primary">+ Legg til person</button>
+        </div>
+      </form>
+    </section>
 
     <section id="activity-section" class="activity-section" hidden>
       <h3>Historikk</h3>
