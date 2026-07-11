@@ -138,6 +138,9 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--yellow); bo
   padding: 14px 16px;
   border-bottom: 1px solid var(--gray-line);
 }
+.contacts-table th.sortable { cursor: pointer; user-select: none; white-space: nowrap; }
+.contacts-table th.sortable:hover { color: var(--anthracite); }
+.sort-arrow { display: inline-block; width: 10px; font-family: var(--font-body); text-transform: none; }
 .contacts-table td {
   padding: 14px 16px;
   border-bottom: 1px solid var(--gray-line);

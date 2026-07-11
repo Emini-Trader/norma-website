@@ -90,6 +90,8 @@
 
   let allContacts = [];
   let primaryContactNames = {}; // contact_id -> navn på hovedkontakt, for tabellvisning/søk
+  let latestActivityDates = {}; // contact_id -> occurred_at for siste Historikk-oppføring
+  let sortState = { column: "last_activity", direction: "desc" };
   let modalMode = "view"; // "view" (kun lesing) eller "edit"
   let allSpecialties = []; // { id, name }, lastet én gang
   let currentSpecialtyIds = new Set();
@@ -230,12 +232,13 @@
 
   async function loadContacts() {
     els.tbody.innerHTML = '<tr><td colspan="5" class="loading-row">Laster…</td></tr>';
-    const [{ data, error }, peopleRes] = await Promise.all([
+    const [{ data, error }, peopleRes, activitiesRes] = await Promise.all([
       supabase
         .from("contacts")
         .select("*, updated_by_profile:profiles!updated_by(first_name, email)")
         .order("updated_at", { ascending: false }),
       supabase.from("contact_people").select("contact_id, full_name, is_primary").order("full_name"),
+      supabase.from("contact_activities").select("contact_id, occurred_at").order("occurred_at", { ascending: false }),
     ]);
 
     if (error) {
@@ -252,7 +255,23 @@
       }
     });
 
+    latestActivityDates = {};
+    (activitiesRes.data || []).forEach((a) => {
+      if (!latestActivityDates[a.contact_id]) {
+        latestActivityDates[a.contact_id] = a.occurred_at; // sortert synkende - forste treff er nyest
+      }
+    });
+
     renderContacts();
+  }
+
+  function lastActivityIso(c) {
+    return latestActivityDates[c.id] || c.updated_at;
+  }
+
+  function lastActivityTime(c) {
+    const iso = lastActivityIso(c);
+    return iso ? new Date(iso).getTime() : 0;
   }
 
   function renderContacts() {
@@ -273,16 +292,55 @@
       return;
     }
 
+    filtered.sort((a, b) => {
+      let cmp;
+      if (sortState.column === "company_name") {
+        cmp = a.company_name.localeCompare(b.company_name, "no");
+      } else {
+        cmp = lastActivityTime(a) - lastActivityTime(b);
+      }
+      if (sortState.direction === "desc") cmp = -cmp;
+      if (cmp !== 0) return cmp;
+      return a.company_name.localeCompare(b.company_name, "no"); // uavhengig tie-break, alltid A->Å
+    });
+
     els.tbody.innerHTML = filtered.map((c) => `
       <tr data-id="${escapeHtml(c.id)}">
         <td class="company-cell">${escapeHtml(c.company_name)}</td>
         <td>${escapeHtml((primaryContactNames[c.id] || {}).name)}</td>
         <td>${escapeHtml(formatPhone(c.phone))}</td>
         <td><span class="status-badge status-${escapeHtml(c.status)}">${escapeHtml(STATUS_LABELS[c.status] || c.status)}</span></td>
-        <td class="meta-cell">${formatDateOnly(c.updated_at)}</td>
+        <td class="meta-cell">${formatDateOnly(lastActivityIso(c))}</td>
       </tr>
     `).join("");
   }
+
+  function updateSortArrows() {
+    document.querySelectorAll(".contacts-table th.sortable").forEach((th) => {
+      const arrow = th.querySelector(".sort-arrow");
+      if (th.dataset.sort === sortState.column) {
+        arrow.textContent = sortState.direction === "asc" ? "▲" : "▼";
+      } else {
+        arrow.textContent = "";
+      }
+    });
+  }
+
+  document.querySelectorAll(".contacts-table th.sortable").forEach((th) => {
+    th.addEventListener("click", () => {
+      const column = th.dataset.sort;
+      if (sortState.column === column) {
+        sortState.direction = sortState.direction === "asc" ? "desc" : "asc";
+      } else {
+        sortState.column = column;
+        sortState.direction = column === "company_name" ? "asc" : "desc";
+      }
+      updateSortArrows();
+      renderContacts();
+    });
+  });
+
+  updateSortArrows();
 
   els.searchInput.addEventListener("input", renderContacts);
   els.statusFilter.addEventListener("change", renderContacts);
