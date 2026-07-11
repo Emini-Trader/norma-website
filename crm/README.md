@@ -134,6 +134,10 @@ albo założyć drugie środowisko (np. staging) startujące od starszego stanu:
   ID kontaktów (np. „1, 2/mail/...", „1-7/mail/...") nie były poprawnie rozbite na typ kontaktu
   i komentarz (cały surowy tekst trafiał jako komentarz, typ jako „Annet") — 169 wpisów w 35
   firmach. Bezpieczna do ponownego uruchomienia.
+- `008_cleanup_dates_and_names.sql` — usunięcie 3 wpisów Historikk z literówką w dacie źródłowej
+  (przez co migracja 007 nie mogła ich poprawić, a wyświetlały dzisiejszą datę jako „Sist
+  endret") oraz ujednolicenie ok. 24 nazw firm zapisanych CAPS LOCKIEM na normalną wielkość
+  liter (z pominięciem znanych akronimów/marek jak NCC, HENT, LNS, NRC, OHLA, STRÅ).
 
 ## Dlaczego jest tabela `profiles` (i 3NF)
 
