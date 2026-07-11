@@ -130,6 +130,10 @@ albo założyć drugie środowisko (np. staging) startujące od starszego stanu:
   duplikowania osób czy historii. Pozostałe 71 firm zaimportowano w całości (firma + osoby
   kontaktowe + pełna historia kontaktu, część sięgająca 2020 roku). Migracja jest bezpieczna do
   ponownego uruchomienia (sprawdza `NOT EXISTS` po nazwie firmy przed importem).
+- `007_historikk_multi_id_fix.sql` — poprawka błędu z migracji 006: notatki z kilkoma/zakresem
+  ID kontaktów (np. „1, 2/mail/...", „1-7/mail/...") nie były poprawnie rozbite na typ kontaktu
+  i komentarz (cały surowy tekst trafiał jako komentarz, typ jako „Annet") — 169 wpisów w 35
+  firmach. Bezpieczna do ponownego uruchomienia.
 
 ## Dlaczego jest tabela `profiles` (i 3NF)
 

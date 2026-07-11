@@ -106,9 +106,41 @@
     return profile.first_name || profile.email || "";
   }
 
+  function groupDigits(digits, sizes) {
+    // sizes f.eks. [3,2,3] -> grupperer digits etter disse lengdene, resten i grupper på 3
+    const groups = [];
+    let i = 0;
+    let s = 0;
+    while (i < digits.length) {
+      const size = sizes[s] || 3;
+      groups.push(digits.slice(i, i + size));
+      i += size;
+      s++;
+    }
+    return groups.join(" ");
+  }
+
   function formatPhone(raw) {
     if (!raw) return "";
-    return raw.replace(/^tel[:.]?\s*/i, "").trim();
+    let s = raw.replace(/^tel[:.]?\s*/i, "").trim();
+    if (!s) return "";
+    s = s.replace(/^00/, "+"); // 00-prefiks = internasjonalt, tilsvarer +
+    const cleaned = s.replace(/[^\d+]/g, "");
+    if (!cleaned) return raw.trim();
+
+    const intlMatch = cleaned.match(/^\+(\d{2})/);
+    if (intlMatch && intlMatch[1] !== "47") {
+      // Utenlandsk nummer: landskode + siffer i grupper på 3
+      const rest = cleaned.slice(intlMatch[0].length);
+      return `+${intlMatch[1]} ${groupDigits(rest, [3, 3, 3])}`.trim();
+    }
+
+    // Norsk nummer (med eller uten +47) - 8 siffer, gruppert xxx xx xxx
+    const local = cleaned.replace(/^\+47/, "");
+    if (local.length === 8) {
+      return groupDigits(local, [3, 2, 3]);
+    }
+    return local || raw.trim();
   }
 
   function formatDateTime(iso) {
