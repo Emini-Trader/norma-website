@@ -98,11 +98,21 @@ kontakt, widoczny w tabeli firm). Jeśli osoba zmienia firmę, w jej wierszu zmi
 (select w sekcji „Kontaktpersoner" w modalu) — to zwykły `UPDATE`, nie zapisujemy historii
 zatrudnienia.
 
-**Jeśli aktualizujesz istniejące wdrożenie CRM** (baza już ma dane z wcześniejszej wersji z jednym
-polem „Kontaktperson"): uruchom w Supabase SQL Editor plik
-[`supabase/migration_002_contact_people.sql`](supabase/migration_002_contact_people.sql) **zanim**
-wdrożysz nową wersję frontendu — przenosi on istniejące dane do nowej tabeli i usuwa stare pole.
-Kolejność ma znaczenie: nowy frontend zakłada, że tabela `contact_people` już istnieje.
+## Historia migracji bazy (`supabase/migrations/`)
+
+`schema.sql` zawiera **pełny, aktualny schemat** — używaj go tylko przy zakładaniu zupełnie nowego
+projektu Supabase od zera (patrz krok 2 wyżej).
+
+Folder [`supabase/migrations/`](supabase/migrations/) to już zastosowane, historyczne kroki, którymi
+dotychczasowa (żyjąca na `crm.norma-gs.no`) baza doszła do obecnego stanu — nie trzeba ich ponownie
+uruchamiać. Trzymane są jako dokumentacja tego, jak i dlaczego zmieniał się schemat (standardowa
+praktyka przy migracjach bazy danych), na wypadek gdyby trzeba było kiedyś odtworzyć historię zmian
+albo założyć drugie środowisko (np. staging) startujące od starszego stanu:
+
+- `002_contact_people.sql` — dodanie encji „osoba kontaktowa" (zamiast jednego pola tekstowego) oraz
+  poprawka 3NF (tabela `profiles` zamiast zdenormalizowanych `*_email` w każdej tabeli).
+- `003_profile_names.sql` — dodanie `first_name`/`last_name` do `profiles`, żeby w CRM pokazywać imię
+  zamiast e-maila.
 
 ## Dlaczego jest tabela `profiles` (i 3NF)
 

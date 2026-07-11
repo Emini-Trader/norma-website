@@ -1,5 +1,6 @@
 -- Migracja 002: osoby kontaktowe (jedna firma -> wiele osób) + poprawka 3NF
--- Uruchom w Supabase Dashboard -> SQL Editor -> Run.
+-- STATUS: już zastosowane na crm.norma-gs.no (2026-07-11) - nie uruchamiaj ponownie.
+-- Trzymane jako historyczny zapis zmiany schematu, patrz README.md.
 -- Zakłada, że schema.sql (migracja 001) już był wcześniej uruchomiony.
 --
 -- Ta migracja robi dwie rzeczy naraz (celowo w jednym kroku, żeby nie migrować dwa razy):

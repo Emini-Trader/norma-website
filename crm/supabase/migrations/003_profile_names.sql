@@ -1,6 +1,7 @@
 -- Migracja 003: imię i nazwisko w profiles (osobne kolumny), zamiast pokazywania e-maila w CRM
--- Uruchom w Supabase Dashboard -> SQL Editor -> Run.
--- Zakłada, że migration_002_contact_people.sql (tabela profiles) już był uruchomiony.
+-- STATUS: już zastosowane na crm.norma-gs.no (2026-07-11) - nie uruchamiaj ponownie.
+-- Trzymane jako historyczny zapis zmiany schematu, patrz README.md.
+-- Zakłada, że 002_contact_people.sql (tabela profiles) już był uruchomiony.
 
 alter table public.profiles add column if not exists first_name text;
 alter table public.profiles add column if not exists last_name text;
