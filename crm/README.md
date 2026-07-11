@@ -104,6 +104,17 @@ polem „Kontaktperson"): uruchom w Supabase SQL Editor plik
 wdrożysz nową wersję frontendu — przenosi on istniejące dane do nowej tabeli i usuwa stare pole.
 Kolejność ma znaczenie: nowy frontend zakłada, że tabela `contact_people` już istnieje.
 
+## Dlaczego jest tabela `profiles` (i 3NF)
+
+Baza jest zaprojektowana pod kątem 3NF: żadna kolumna nie duplikuje danych, które da się
+jednoznacznie wyprowadzić z klucza głównego innej tabeli. Jedyne miejsce, gdzie kusiło, żeby to
+złamać, to pokazywanie „kto edytował" — `auth.users` (gdzie Supabase trzyma e-maile kont) nie jest
+odpytywalne z poziomu zwykłego zapytania frontendu (ze względów bezpieczeństwa). Zamiast kopiować
+e-mail do każdej tabeli (`created_by_email`, `updated_by_email` — co byłoby zależnością przechodnią
+i psuło 3NF, a przy zmianie e-maila konta zostawiałoby nieaktualne kopie), jest jedna tabela
+`public.profiles` (id, email), zsynchronizowana triggerem z `auth.users`, do której `contacts`,
+`contact_people` i `contact_activities` robią zwykły FK + JOIN po `created_by`/`updated_by`.
+
 ## Dodawanie/usuwanie użytkowników później
 
 Wykonuje się to wyłącznie w panelu Supabase (**Authentication → Users**), nie w kodzie aplikacji —

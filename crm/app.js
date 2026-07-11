@@ -137,7 +137,10 @@
   async function loadContacts() {
     els.tbody.innerHTML = '<tr><td colspan="6" class="loading-row">Laster…</td></tr>';
     const [{ data, error }, peopleRes] = await Promise.all([
-      supabase.from("contacts").select("*").order("updated_at", { ascending: false }),
+      supabase
+        .from("contacts")
+        .select("*, updated_by_profile:profiles!updated_by(email)")
+        .order("updated_at", { ascending: false }),
       supabase.from("contact_people").select("contact_id, full_name, is_primary").order("full_name"),
     ]);
 
@@ -183,7 +186,7 @@
         <td>${escapeHtml(c.phone)}</td>
         <td>${escapeHtml(c.email)}</td>
         <td><span class="status-badge status-${escapeHtml(c.status)}">${escapeHtml(STATUS_LABELS[c.status] || c.status)}</span></td>
-        <td class="meta-cell">${formatDateTime(c.updated_at)}<br>${escapeHtml(c.updated_by_email || "")}</td>
+        <td class="meta-cell">${formatDateTime(c.updated_at)}<br>${escapeHtml((c.updated_by_profile || {}).email)}</td>
       </tr>
     `).join("");
   }
@@ -300,7 +303,7 @@
     els.peopleList.innerHTML = "<li>Laster…</li>";
     const { data, error } = await supabase
       .from("contact_people")
-      .select("*")
+      .select("*, updated_by_profile:profiles!updated_by(email)")
       .eq("contact_id", contactId)
       .order("is_primary", { ascending: false })
       .order("full_name");
@@ -334,7 +337,7 @@
             <select class="p-company">${companyOptions(p.contact_id)}</select>
           </div>
           <div class="person-actions">
-            <span class="meta-cell">${escapeHtml(p.updated_by_email || "")} · ${formatDateTime(p.updated_at)}</span>
+            <span class="meta-cell">${escapeHtml((p.updated_by_profile || {}).email)} · ${formatDateTime(p.updated_at)}</span>
             <div class="person-actions-buttons">
               <button type="button" class="btn-danger btn-delete-person">Slett</button>
               <button type="submit" class="btn-ghost btn-save-person">Lagre</button>
@@ -412,7 +415,7 @@
     els.activityList.innerHTML = "<li>Laster…</li>";
     const { data, error } = await supabase
       .from("contact_activities")
-      .select("*")
+      .select("*, created_by_profile:profiles!created_by(email)")
       .eq("contact_id", contactId)
       .order("created_at", { ascending: false });
 
@@ -427,7 +430,7 @@
     els.activityList.innerHTML = data.map((a) => `
       <li class="activity-item">
         ${escapeHtml(a.note)}
-        <span class="activity-meta">${escapeHtml(a.created_by_email || "")} · ${formatDateTime(a.created_at)}</span>
+        <span class="activity-meta">${escapeHtml((a.created_by_profile || {}).email)} · ${formatDateTime(a.created_at)}</span>
       </li>
     `).join("");
   }
