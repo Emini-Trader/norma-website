@@ -115,6 +115,11 @@ i psuło 3NF, a przy zmianie e-maila konta zostawiałoby nieaktualne kopie), jes
 `public.profiles` (id, email), zsynchronizowana triggerem z `auth.users`, do której `contacts`,
 `contact_people` i `contact_activities` robią zwykły FK + JOIN po `created_by`/`updated_by`.
 
+`profiles` ma też kolumnę `full_name` — w CRM przy „kto edytował" pokazuje się imię i nazwisko
+zamiast e-maila, jeśli jest ustawione (w przeciwnym razie e-mail jako zapasowa opcja). Dla nowej
+osoby: po dodaniu konta w **Authentication → Users**, wejdź w **Table Editor → profiles**, znajdź
+wiersz po e-mailu i wpisz `full_name` — nie trzeba do tego SQL-a.
+
 ## Dodawanie/usuwanie użytkowników później
 
 Wykonuje się to wyłącznie w panelu Supabase (**Authentication → Users**), nie w kodzie aplikacji —
