@@ -138,10 +138,12 @@ albo założyć drugie środowisko (np. staging) startujące od starszego stanu:
   (przez co migracja 007 nie mogła ich poprawić, a wyświetlały dzisiejszą datę jako „Sist
   endret") oraz ujednolicenie ok. 24 nazw firm zapisanych CAPS LOCKIEM na normalną wielkość
   liter (z pominięciem znanych akronimów/marek jak NCC, HENT, LNS, NRC, OHLA, STRÅ).
-- `009_fix_hersleth_phantom_date.sql` — poprawka migracji 008: wpis Hersleth Entreprenør AS
-  miał pojedyncze ID w źródle, więc został poprawnie rozpoznany już przy imporcie (nie pasował
-  do warunku „nieprzetworzony surowy tekst" z migracji 008) i nie został usunięty. Usuwa go
-  po dacie (najnowsza/nierealna wśród wpisów tej firmy), bezpiecznie do ponownego uruchomienia.
+- `009_fix_hersleth_phantom_date.sql` — poprawka daty dla Hersleth Entreprenør AS. W źródłowym
+  Excelu data była wpisana jako zwykły tekst „30.11.0202" (literówka zamiast „30.11.2020" —
+  pasuje chronologicznie między sąsiednimi wpisami), więc parser przy imporcie jej nie
+  rozpoznał i wstawił dzisiejszą datę. Migracja koryguje datę na 30.11.2020 zamiast usuwać
+  wpis (migracja 008 próbowała go usunąć, ale nie pasował do jej warunku — to prawdziwy,
+  historyczny kontakt, nie śmieciowe dane). Bezpieczna do ponownego uruchomienia.
 
 ## Dlaczego jest tabela `profiles` (i 3NF)
 

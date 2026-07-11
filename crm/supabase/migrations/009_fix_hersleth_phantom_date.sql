@@ -1,15 +1,18 @@
--- Migracja 009: poprawka migracji 008 dla Hersleth Entreprenør AS
--- Poprzednia proba usuniecia szukala nieprzetworzonego surowego tekstu ("1/mail/oppdatering")
--- z contact_type='annet' - ale ten wpis mial pojedyncze ID w zrodle, wiec zostal poprawnie
--- rozpoznany (note='oppdatering', contact_type='epost') juz przy pierwszym imporcie. Jedynym
--- problemem byla literowka w dacie ("30.11.0202"), przez co wpis trafil z dzisiejsza data.
--- Tutaj usuwamy go po prostu jako wpis z najpozniejsza (nierealna) data dla tej firmy -
--- wszystkie prawdziwe wpisy Hersleth sa z 2020-2021, wiec to jednoznacznie ten sam wpis.
-
--- Warunek "occurred_at > 2022-01-01" to zabezpieczenie, zeby uruchomienie tej migracji
--- drugi raz (gdy problem jest juz naprawiony) nie usunelo przez pomylke prawdziwego,
--- najnowszego wpisu z 2021 roku.
-DELETE FROM public.contact_activities
+-- Migracja 009: poprawka daty dla Hersleth Entreprenør AS (nie usuwanie - to prawdziwy wpis)
+--
+-- W zrodlowym Excelu ta data byla wpisana jako zwykly TEKST "30.11.0202" (nie prawdziwa data
+-- Excela, w przeciwienstwie do sasiednich wierszy) - najpewniej literowka przy recznym
+-- wpisywaniu: chronologicznie pasuje idealnie jako 30.11.2020 (miedzy wpisami z 18.11.2020
+-- i 26.02.2021). Poniewaz parser przy imporcie (migracja 006) nie rozpoznal tego tekstu jako
+-- daty, wpis trafil z dzisiejsza data zamiast prawdziwej. Tutaj poprawiamy date zamiast
+-- usuwac wpis (migracja 008 probowala go usunac, ale nie pasowal do warunku - patrz komentarz
+-- w tamtym pliku).
+--
+-- Warunek "occurred_at > 2022-01-01" to zabezpieczenie przed ponownym uruchomieniem: jesli
+-- wpis jest juz poprawiony, MAX(occurred_at) dla tej firmy to 2021-10-28 (nie pasuje), wiec
+-- migracja bezpiecznie nic nie zrobi.
+UPDATE public.contact_activities
+SET occurred_at = '2020-11-30'
 WHERE contact_id = (SELECT id FROM public.contacts WHERE lower(company_name) = lower('Hersleth Entreprenør AS'))
   AND occurred_at > '2022-01-01'
   AND occurred_at = (
