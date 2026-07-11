@@ -78,7 +78,7 @@
 
   function editorName(profile) {
     if (!profile) return "";
-    return profile.full_name || profile.email || "";
+    return profile.first_name || profile.email || "";
   }
 
   function formatDateTime(iso) {
@@ -144,7 +144,7 @@
     const [{ data, error }, peopleRes] = await Promise.all([
       supabase
         .from("contacts")
-        .select("*, updated_by_profile:profiles!updated_by(full_name, email)")
+        .select("*, updated_by_profile:profiles!updated_by(first_name, email)")
         .order("updated_at", { ascending: false }),
       supabase.from("contact_people").select("contact_id, full_name, is_primary").order("full_name"),
     ]);
@@ -308,7 +308,7 @@
     els.peopleList.innerHTML = "<li>Laster…</li>";
     const { data, error } = await supabase
       .from("contact_people")
-      .select("*, updated_by_profile:profiles!updated_by(full_name, email)")
+      .select("*, updated_by_profile:profiles!updated_by(first_name, email)")
       .eq("contact_id", contactId)
       .order("is_primary", { ascending: false })
       .order("full_name");
@@ -420,7 +420,7 @@
     els.activityList.innerHTML = "<li>Laster…</li>";
     const { data, error } = await supabase
       .from("contact_activities")
-      .select("*, created_by_profile:profiles!created_by(full_name, email)")
+      .select("*, created_by_profile:profiles!created_by(first_name, email)")
       .eq("contact_id", contactId)
       .order("created_at", { ascending: false });
 

@@ -10,7 +10,8 @@
 create table if not exists public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   email text not null,
-  full_name text  -- ustaw ręcznie w Table Editor po dodaniu użytkownika; pokazuje się zamiast e-maila w CRM
+  first_name text,  -- ustaw ręcznie w Table Editor po dodaniu użytkownika; pokazuje się zamiast e-maila w CRM
+  last_name text
 );
 
 alter table public.profiles enable row level security;
