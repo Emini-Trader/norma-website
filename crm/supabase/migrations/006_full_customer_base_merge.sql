@@ -879,9 +879,6 @@ BEGIN
     INSERT INTO public.contact_people (contact_id, full_name, phone, email, is_primary)
       VALUES (v_contact_id, 'Knut Magnus Brentebråten', '479 44 020', 'knut.brentebraaten@norhusnorge.no', true)
       RETURNING id INTO v_person_1;
-    INSERT INTO public.contact_people (contact_id, full_name, phone, email, is_primary)
-      VALUES (v_contact_id, NULL, NULL, 'post@byggoghytte.no', false)
-      RETURNING id INTO v_person_2;
 
     INSERT INTO public.contact_activities (contact_id, occurred_at, person_id, contact_type, note)
       VALUES (v_contact_id, '2020-10-28', v_person_1, 'epost', 'standard tilbud');
@@ -907,7 +904,7 @@ DECLARE
 BEGIN
   IF NOT EXISTS (SELECT 1 FROM public.contacts WHERE lower(company_name) = lower('VEIDEKKE ASA')) THEN
     INSERT INTO public.contacts (company_name, phone, email, website, country, status)
-      VALUES ('VEIDEKKE ASA', NULL, 'melih.yasar@veidekke.no', 'http://veidekke.no/', 'Norge', 'kontaktet')
+      VALUES ('VEIDEKKE ASA', '977 53 339', 'melih.yasar@veidekke.no', 'http://veidekke.no/', 'Norge', 'kontaktet')
       RETURNING id INTO v_contact_id;
 
     INSERT INTO public.contact_people (contact_id, full_name, phone, email, is_primary)
@@ -1855,7 +1852,7 @@ DECLARE
 BEGIN
   IF NOT EXISTS (SELECT 1 FROM public.contacts WHERE lower(company_name) = lower('KAARE MORTENSEN AS')) THEN
     INSERT INTO public.contacts (company_name, phone, email, website, country, status)
-      VALUES ('KAARE MORTENSEN AS', NULL, 'stein-inge@kaare-mortensen.as', 'http://www.kaare-mortensen.as/', 'Norge', 'kontaktet')
+      VALUES ('KAARE MORTENSEN AS', '970 59 402', 'stein-inge@kaare-mortensen.as', 'http://www.kaare-mortensen.as/', 'Norge', 'kontaktet')
       RETURNING id INTO v_contact_id;
 
     INSERT INTO public.contact_people (contact_id, full_name, phone, email, is_primary)
@@ -2246,7 +2243,7 @@ DECLARE
 BEGIN
   IF NOT EXISTS (SELECT 1 FROM public.contacts WHERE lower(company_name) = lower('LNS AS')) THEN
     INSERT INTO public.contacts (company_name, phone, email, website, country, status)
-      VALUES ('LNS AS', '465 59 619', NULL, 'https://lns.no/', 'Norge', 'kontaktet')
+      VALUES ('LNS AS', '465 59 619', 'firmapost@lns.no', 'https://lns.no/', 'Norge', 'kontaktet')
       RETURNING id INTO v_contact_id;
 
     INSERT INTO public.contact_people (contact_id, full_name, phone, email, is_primary)
@@ -2255,9 +2252,6 @@ BEGIN
     INSERT INTO public.contact_people (contact_id, full_name, phone, email, is_primary)
       VALUES (v_contact_id, 'Maciej Warczak', '477 00 734', NULL, false)
       RETURNING id INTO v_person_2;
-    INSERT INTO public.contact_people (contact_id, full_name, phone, email, is_primary)
-      VALUES (v_contact_id, NULL, NULL, 'firmapost@lns.no', false)
-      RETURNING id INTO v_person_3;
 
     INSERT INTO public.contact_activities (contact_id, occurred_at, person_id, contact_type, note)
       VALUES (v_contact_id, '2020-12-09', NULL, 'annet', '1, 2/mail/standard tilbud');
