@@ -83,7 +83,9 @@
     activityPerson: document.getElementById("activity-person"),
     activityType: document.getElementById("activity-type"),
     activityNote: document.getElementById("activity-note"),
+    activityAttachmentBtn: document.getElementById("activity-attachment-btn"),
     activityAttachmentInput: document.getElementById("activity-attachment-input"),
+    activityAttachmentFilenames: document.getElementById("activity-attachment-filenames"),
   };
 
   let allContacts = [];
@@ -459,6 +461,7 @@
     els.contactForm.reset();
     els.personAddForm.reset();
     els.activityForm.reset();
+    resetAttachmentPicker();
     if (contact) {
       fillContact(contact);
       els.deleteBtn.hidden = false;
@@ -763,6 +766,20 @@
     }).join("");
   }
 
+  function resetAttachmentPicker() {
+    els.activityAttachmentInput.value = "";
+    els.activityAttachmentFilenames.textContent = "Ingen filer valgt";
+  }
+
+  els.activityAttachmentBtn.addEventListener("click", () => els.activityAttachmentInput.click());
+
+  els.activityAttachmentInput.addEventListener("change", () => {
+    const files = Array.from(els.activityAttachmentInput.files || []);
+    els.activityAttachmentFilenames.textContent = files.length
+      ? files.map((f) => f.name).join(", ")
+      : "Ingen filer valgt";
+  });
+
   els.activityTbody.addEventListener("click", async (e) => {
     const link = e.target.closest(".attachment-link");
     if (!link) return;
@@ -817,7 +834,7 @@
     els.activityNote.value = "";
     els.activityDate.value = todayStr();
     els.activityPerson.value = "";
-    els.activityAttachmentInput.value = "";
+    resetAttachmentPicker();
     loadActivities(contactId);
     loadContacts().then(() => {
       const fresh = allContacts.find((c) => c.id === contactId);

@@ -187,9 +187,14 @@
             </select>
           </div>
           <textarea id="activity-note" placeholder="Kommentar (f.eks. «ringte, ingen svar» eller «sendt tilbud»)" required></textarea>
-          <label class="activity-attachment-label">Vedlegg (valgfritt, f.eks. .msg fra Outlook)
-            <input type="file" id="activity-attachment-input" multiple>
-          </label>
+          <div class="activity-attachment-field">
+            <span class="activity-attachment-caption">Vedlegg (valgfritt, f.eks. .msg fra Outlook)</span>
+            <div class="activity-attachment-picker">
+              <button type="button" id="activity-attachment-btn" class="btn-ghost">Velg filer</button>
+              <span id="activity-attachment-filenames" class="meta-cell">Ingen filer valgt</span>
+              <input type="file" id="activity-attachment-input" multiple hidden>
+            </div>
+          </div>
           <button type="submit" class="btn-primary">+ Legg til</button>
         </form>
       </section>
