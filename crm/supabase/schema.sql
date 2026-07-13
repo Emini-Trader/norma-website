@@ -54,14 +54,15 @@ create table if not exists public.contacts (
   website text,
   address text,
   country text,
-  status text not null default 'ny' check (status in ('ny', 'kontaktet', 'venter_svar', 'kunde', 'avslatt')),
   created_at timestamptz not null default now(),
   created_by uuid references public.profiles(id),
   updated_at timestamptz not null default now(),
   updated_by uuid references public.profiles(id)
 );
 
-comment on column public.contacts.status is 'ny=Ny, kontaktet=Kontaktet, venter_svar=Venter på svar, kunde=Kunde, avslatt=Avslått';
+-- Ingen egen status-kolonne her: "Status" på hovedsiden utledes i frontend fra
+-- contact_type til siste contact_activities-oppføring (se app.js) - det gamle
+-- frittstående statusfeltet var ukoblet fra Historikk og ble derfor fjernet (migrasjon 010).
 
 -- 3) Kontaktpersoner: jedna firma może mieć wiele osób kontaktowych.
 --    Sztuczny PK (id), FK do contacts. Bez historii zatrudnienia — zmiana firmy = UPDATE contact_id.
@@ -87,13 +88,14 @@ create table if not exists public.contact_activities (
   contact_id uuid not null references public.contacts(id) on delete cascade,
   occurred_at date not null default current_date,
   person_id uuid references public.contact_people(id) on delete set null,
-  contact_type text not null default 'annet' check (contact_type in ('epost', 'telefon', 'mote', 'annet')),
+  contact_type text not null default 'annet'
+    check (contact_type in ('epost', 'telefon', 'mote', 'annet', 'avslatt', 'svar_fra_kunden')),
   note text not null,
   created_at timestamptz not null default now(),
   created_by uuid references public.profiles(id)
 );
 
-comment on column public.contact_activities.contact_type is 'epost=E-post, telefon=Telefon, mote=Møte, annet=Annet';
+comment on column public.contact_activities.contact_type is 'epost=E-post, telefon=Telefon, mote=Møte, annet=Annet, avslatt=Avslått, svar_fra_kunden=Svar fra kunden';
 comment on column public.contact_activities.person_id is 'Hvilken kontaktperson (contact_people) kontakten var med - kan være NULL';
 
 create index if not exists contact_activities_contact_id_idx on public.contact_activities(contact_id);
@@ -171,13 +173,36 @@ create trigger trg_contact_specialties_audit
   before insert on public.contact_specialties
   for each row execute function public.set_activity_audit_fields();
 
--- 7) Row Level Security: tylko zalogowani użytkownicy (zaproszeni przez admina) mają dostęp.
+-- 7) Vedlegg til Historikk (f.eks. .msg-fil fra Outlook) - metadata her, selve filen i
+--    Supabase Storage (bucket "activity-attachments", se lenger ned).
+create table if not exists public.contact_activity_attachments (
+  id uuid primary key default gen_random_uuid(),
+  activity_id uuid not null references public.contact_activities(id) on delete cascade,
+  file_name text not null,
+  storage_path text not null,
+  content_type text,
+  size_bytes bigint,
+  created_at timestamptz not null default now(),
+  created_by uuid references public.profiles(id)
+);
+
+create index if not exists contact_activity_attachments_activity_id_idx
+  on public.contact_activity_attachments(activity_id);
+
+-- Ta sama (insert-only) funkcja audytowa nadaje się dla contact_activity_attachments
+drop trigger if exists trg_activity_attachments_audit on public.contact_activity_attachments;
+create trigger trg_activity_attachments_audit
+  before insert on public.contact_activity_attachments
+  for each row execute function public.set_activity_audit_fields();
+
+-- 8) Row Level Security: tylko zalogowani użytkownicy (zaproszeni przez admina) mają dostęp.
 --    Brak ról — każdy zalogowany może odczytywać i edytować wszystko.
 alter table public.contacts enable row level security;
 alter table public.contact_people enable row level security;
 alter table public.contact_activities enable row level security;
 alter table public.specialties enable row level security;
 alter table public.contact_specialties enable row level security;
+alter table public.contact_activity_attachments enable row level security;
 
 drop policy if exists "authenticated can read contacts" on public.contacts;
 create policy "authenticated can read contacts" on public.contacts
@@ -242,3 +267,33 @@ create policy "authenticated can insert contact_specialties" on public.contact_s
 drop policy if exists "authenticated can delete contact_specialties" on public.contact_specialties;
 create policy "authenticated can delete contact_specialties" on public.contact_specialties
   for delete to authenticated using (true);
+
+drop policy if exists "authenticated can read attachments" on public.contact_activity_attachments;
+create policy "authenticated can read attachments" on public.contact_activity_attachments
+  for select to authenticated using (true);
+
+drop policy if exists "authenticated can insert attachments" on public.contact_activity_attachments;
+create policy "authenticated can insert attachments" on public.contact_activity_attachments
+  for insert to authenticated with check (true);
+
+drop policy if exists "authenticated can delete attachments" on public.contact_activity_attachments;
+create policy "authenticated can delete attachments" on public.contact_activity_attachments
+  for delete to authenticated using (true);
+
+-- 9) Storage: privat bucket for vedlegg til Historikk, kun for innloggede brukere
+--    (nedlasting via signerte URL-er, se app.js) - maks 25 MB per fil.
+insert into storage.buckets (id, name, public, file_size_limit)
+values ('activity-attachments', 'activity-attachments', false, 26214400)
+on conflict (id) do nothing;
+
+drop policy if exists "authenticated can read activity attachments" on storage.objects;
+create policy "authenticated can read activity attachments" on storage.objects
+  for select to authenticated using (bucket_id = 'activity-attachments');
+
+drop policy if exists "authenticated can upload activity attachments" on storage.objects;
+create policy "authenticated can upload activity attachments" on storage.objects
+  for insert to authenticated with check (bucket_id = 'activity-attachments');
+
+drop policy if exists "authenticated can delete activity attachments" on storage.objects;
+create policy "authenticated can delete activity attachments" on storage.objects
+  for delete to authenticated using (bucket_id = 'activity-attachments');

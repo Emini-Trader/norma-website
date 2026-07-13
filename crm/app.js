@@ -16,19 +16,17 @@
     window.SUPABASE_ANON_KEY
   );
 
-  const STATUS_LABELS = {
-    ny: "Ny",
-    kontaktet: "Kontaktet",
-    venter_svar: "Venter på svar",
-    kunde: "Kunde",
-    avslatt: "Avslått",
-  };
-
+  // Status på hovedsiden er ikke lenger et eget felt - den følger contact_type til siste
+  // Historikk-oppføring for firmaet (se lastActivity()/renderContacts()), "ny" = ingen
+  // Historikk-oppføring ennå.
   const CONTACT_TYPE_LABELS = {
+    ny: "Ny",
     epost: "E-post",
     telefon: "Telefon",
     mote: "Møte",
     annet: "Annet",
+    avslatt: "Avslått",
+    svar_fra_kunden: "Svar fra kunden",
   };
 
   const els = {
@@ -68,7 +66,6 @@
     fAddress: document.getElementById("f-address"),
     fCountry: document.getElementById("f-country"),
     fSpecialties: document.getElementById("f-specialties"),
-    fStatus: document.getElementById("f-status"),
     deleteBtn: document.getElementById("delete-contact-btn"),
     peopleSection: document.getElementById("people-section"),
     peopleHint: document.getElementById("people-hint"),
@@ -86,11 +83,12 @@
     activityPerson: document.getElementById("activity-person"),
     activityType: document.getElementById("activity-type"),
     activityNote: document.getElementById("activity-note"),
+    activityAttachmentInput: document.getElementById("activity-attachment-input"),
   };
 
   let allContacts = [];
   let primaryContactNames = {}; // contact_id -> navn på hovedkontakt, for tabellvisning/søk
-  let latestActivityDates = {}; // contact_id -> occurred_at for siste Historikk-oppføring
+  let latestActivityByContact = {}; // contact_id -> siste contact_activities-rad (occurred_at, contact_type, redigert av)
   let sortState = { column: "last_activity", direction: "desc" };
   let modalMode = "view"; // "view" (kun lesing) eller "edit"
   let allSpecialties = []; // { id, name }, lastet én gang
@@ -231,18 +229,22 @@
   // ---------- Load & render contacts ----------
 
   async function loadContacts() {
-    els.tbody.innerHTML = '<tr><td colspan="5" class="loading-row">Laster…</td></tr>';
+    els.tbody.innerHTML = '<tr><td colspan="6" class="loading-row">Laster…</td></tr>';
     const [{ data, error }, peopleRes, activitiesRes] = await Promise.all([
       supabase
         .from("contacts")
         .select("*, updated_by_profile:profiles!updated_by(first_name, email)")
         .order("updated_at", { ascending: false }),
       supabase.from("contact_people").select("contact_id, full_name, is_primary").order("full_name"),
-      supabase.from("contact_activities").select("contact_id, occurred_at").order("occurred_at", { ascending: false }),
+      supabase
+        .from("contact_activities")
+        .select("contact_id, occurred_at, contact_type, created_by_profile:profiles!created_by(first_name, email)")
+        .order("occurred_at", { ascending: false })
+        .order("created_at", { ascending: false }),
     ]);
 
     if (error) {
-      els.tbody.innerHTML = `<tr><td colspan="5" class="empty-row">Feil ved lasting: ${escapeHtml(error.message)}</td></tr>`;
+      els.tbody.innerHTML = `<tr><td colspan="6" class="empty-row">Feil ved lasting: ${escapeHtml(error.message)}</td></tr>`;
       return;
     }
     allContacts = data || [];
@@ -255,18 +257,24 @@
       }
     });
 
-    latestActivityDates = {};
+    latestActivityByContact = {};
     (activitiesRes.data || []).forEach((a) => {
-      if (!latestActivityDates[a.contact_id]) {
-        latestActivityDates[a.contact_id] = a.occurred_at; // sortert synkende - forste treff er nyest
+      if (!latestActivityByContact[a.contact_id]) {
+        latestActivityByContact[a.contact_id] = a; // sortert synkende - forste treff er nyest
       }
     });
 
     renderContacts();
   }
 
+  // Status på hovedsiden = contact_type til siste Historikk-oppføring ("ny" = ingen ennå)
+  function lastActivity(c) {
+    return latestActivityByContact[c.id];
+  }
+
   function lastActivityIso(c) {
-    return latestActivityDates[c.id] || c.updated_at;
+    const a = lastActivity(c);
+    return (a && a.occurred_at) || c.updated_at;
   }
 
   function lastActivityTime(c) {
@@ -274,12 +282,22 @@
     return iso ? new Date(iso).getTime() : 0;
   }
 
+  function lastActivityTypeKey(c) {
+    const a = lastActivity(c);
+    return a ? a.contact_type : "ny";
+  }
+
+  function lastActivityEditorName(c) {
+    const a = lastActivity(c);
+    return editorName(a ? a.created_by_profile : c.updated_by_profile);
+  }
+
   function renderContacts() {
     const search = els.searchInput.value.trim().toLowerCase();
     const statusFilterVal = els.statusFilter.value;
 
     const filtered = allContacts.filter((c) => {
-      if (statusFilterVal && c.status !== statusFilterVal) return false;
+      if (statusFilterVal && lastActivityTypeKey(c) !== statusFilterVal) return false;
       if (!search) return true;
       const personName = (primaryContactNames[c.id] || {}).name;
       const haystack = [c.company_name, personName, c.email, c.phone, c.address]
@@ -288,7 +306,7 @@
     });
 
     if (filtered.length === 0) {
-      els.tbody.innerHTML = '<tr><td colspan="5" class="empty-row">Ingen treff.</td></tr>';
+      els.tbody.innerHTML = '<tr><td colspan="6" class="empty-row">Ingen treff.</td></tr>';
       return;
     }
 
@@ -304,15 +322,19 @@
       return a.company_name.localeCompare(b.company_name, "no"); // uavhengig tie-break, alltid A->Å
     });
 
-    els.tbody.innerHTML = filtered.map((c) => `
+    els.tbody.innerHTML = filtered.map((c) => {
+      const typeKey = lastActivityTypeKey(c);
+      return `
       <tr data-id="${escapeHtml(c.id)}">
         <td class="company-cell">${escapeHtml(c.company_name)}</td>
         <td>${escapeHtml((primaryContactNames[c.id] || {}).name)}</td>
         <td>${escapeHtml(formatPhone(c.phone))}</td>
-        <td><span class="status-badge status-${escapeHtml(c.status)}">${escapeHtml(STATUS_LABELS[c.status] || c.status)}</span></td>
+        <td><span class="status-badge status-${escapeHtml(typeKey)}">${escapeHtml(CONTACT_TYPE_LABELS[typeKey] || typeKey)}</span></td>
         <td class="meta-cell">${formatDateOnly(lastActivityIso(c))}</td>
+        <td class="meta-cell">${escapeHtml(lastActivityEditorName(c))}</td>
       </tr>
-    `).join("");
+    `;
+    }).join("");
   }
 
   function updateSortArrows() {
@@ -398,7 +420,6 @@
     els.fWebsite.value = contact.website || "";
     els.fAddress.value = contact.address || "";
     els.fCountry.value = contact.country || "";
-    els.fStatus.value = contact.status || "ny";
 
     els.vPhone.textContent = formatPhone(contact.phone) || "—";
     els.vEmail.textContent = contact.email || "—";
@@ -409,7 +430,8 @@
     }
     els.vAddress.textContent = contact.address || "—";
     els.vCountry.textContent = contact.country || "—";
-    els.vStatus.innerHTML = `<span class="status-badge status-${escapeHtml(contact.status)}">${escapeHtml(STATUS_LABELS[contact.status] || contact.status)}</span>`;
+    const typeKey = lastActivityTypeKey(contact);
+    els.vStatus.innerHTML = `<span class="status-badge status-${escapeHtml(typeKey)}">${escapeHtml(CONTACT_TYPE_LABELS[typeKey] || typeKey)}</span>`;
   }
 
   async function loadContactSpecialties(contactId) {
@@ -451,7 +473,6 @@
       els.modalTitle.textContent = "Ny firma";
       els.contactId.value = "";
       els.fCountry.value = "";
-      els.fStatus.value = "ny";
       els.deleteBtn.hidden = true;
       els.peopleSection.hidden = true;
       els.peopleList.innerHTML = "";
@@ -481,7 +502,6 @@
       website: els.fWebsite.value.trim() || null,
       address: els.fAddress.value.trim() || null,
       country: els.fCountry.value.trim() || null,
-      status: els.fStatus.value,
     };
     const selectedSpecialtyIds = Array.from(els.fSpecialties.querySelectorAll(".spec-checkbox:checked")).map((cb) => cb.value);
 
@@ -683,10 +703,13 @@
 
   // ---------- Activity log (Historikk) ----------
 
+  const ATTACHMENT_BUCKET = "activity-attachments";
+
   let currentActivities = [];
+  let currentAttachmentsByActivity = {}; // activity_id -> [{id, file_name, storage_path}, ...]
 
   async function loadActivities(contactId) {
-    els.activityTbody.innerHTML = '<tr><td colspan="5">Laster…</td></tr>';
+    els.activityTbody.innerHTML = '<tr><td colspan="6">Laster…</td></tr>';
     const { data, error } = await supabase
       .from("contact_activities")
       .select("*, created_by_profile:profiles!created_by(first_name, email), person:contact_people!person_id(full_name)")
@@ -695,28 +718,62 @@
       .order("created_at", { ascending: false });
 
     if (error) {
-      els.activityTbody.innerHTML = `<tr><td colspan="5">Feil: ${escapeHtml(error.message)}</td></tr>`;
+      els.activityTbody.innerHTML = `<tr><td colspan="6">Feil: ${escapeHtml(error.message)}</td></tr>`;
       return;
     }
     currentActivities = data || [];
+    await loadAttachments(currentActivities.map((a) => a.id));
     renderActivities();
+  }
+
+  async function loadAttachments(activityIds) {
+    currentAttachmentsByActivity = {};
+    if (!activityIds.length) return;
+    const { data, error } = await supabase
+      .from("contact_activity_attachments")
+      .select("id, activity_id, file_name, storage_path")
+      .in("activity_id", activityIds)
+      .order("created_at");
+    if (error) return;
+    (data || []).forEach((att) => {
+      (currentAttachmentsByActivity[att.activity_id] = currentAttachmentsByActivity[att.activity_id] || []).push(att);
+    });
   }
 
   function renderActivities() {
     if (currentActivities.length === 0) {
-      els.activityTbody.innerHTML = '<tr><td colspan="5" class="empty-row">Ingen historikk ennå.</td></tr>';
+      els.activityTbody.innerHTML = '<tr><td colspan="6" class="empty-row">Ingen historikk ennå.</td></tr>';
       return;
     }
-    els.activityTbody.innerHTML = currentActivities.map((a) => `
+    els.activityTbody.innerHTML = currentActivities.map((a) => {
+      const attachments = currentAttachmentsByActivity[a.id] || [];
+      const attachmentsHtml = attachments.length
+        ? attachments.map((att) => `<a href="#" class="attachment-link" data-path="${escapeHtml(att.storage_path)}">${escapeHtml(att.file_name)}</a>`).join("<br>")
+        : "—";
+      return `
       <tr>
         <td>${formatDate(a.occurred_at)}</td>
         <td>${escapeHtml(editorName(a.created_by_profile))}</td>
         <td>${escapeHtml((a.person || {}).full_name)}</td>
         <td>${escapeHtml(CONTACT_TYPE_LABELS[a.contact_type] || a.contact_type)}</td>
         <td>${escapeHtml(a.note)}</td>
+        <td>${attachmentsHtml}</td>
       </tr>
-    `).join("");
+    `;
+    }).join("");
   }
+
+  els.activityTbody.addEventListener("click", async (e) => {
+    const link = e.target.closest(".attachment-link");
+    if (!link) return;
+    e.preventDefault();
+    const { data, error } = await supabase.storage.from(ATTACHMENT_BUCKET).createSignedUrl(link.dataset.path, 60);
+    if (error) {
+      alert("Feil ved henting av vedlegg: " + error.message);
+      return;
+    }
+    window.open(data.signedUrl, "_blank", "noopener");
+  });
 
   els.activityForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -724,21 +781,48 @@
     const note = els.activityNote.value.trim();
     if (!contactId || !note) return;
 
-    const { error } = await supabase.from("contact_activities").insert({
-      contact_id: contactId,
-      occurred_at: els.activityDate.value || todayStr(),
-      person_id: els.activityPerson.value || null,
-      contact_type: els.activityType.value,
-      note,
-    });
+    const { data: inserted, error } = await supabase
+      .from("contact_activities")
+      .insert({
+        contact_id: contactId,
+        occurred_at: els.activityDate.value || todayStr(),
+        person_id: els.activityPerson.value || null,
+        contact_type: els.activityType.value,
+        note,
+      })
+      .select("id")
+      .single();
     if (error) {
       alert("Feil ved lagring av notat: " + error.message);
       return;
     }
+
+    const files = Array.from(els.activityAttachmentInput.files || []);
+    for (const file of files) {
+      const path = `${inserted.id}/${crypto.randomUUID()}-${file.name}`;
+      const { error: uploadError } = await supabase.storage.from(ATTACHMENT_BUCKET).upload(path, file);
+      if (uploadError) {
+        alert(`Feil ved opplasting av vedlegg «${file.name}»: ${uploadError.message}`);
+        continue;
+      }
+      await supabase.from("contact_activity_attachments").insert({
+        activity_id: inserted.id,
+        file_name: file.name,
+        storage_path: path,
+        content_type: file.type || null,
+        size_bytes: file.size,
+      });
+    }
+
     els.activityNote.value = "";
     els.activityDate.value = todayStr();
     els.activityPerson.value = "";
+    els.activityAttachmentInput.value = "";
     loadActivities(contactId);
+    loadContacts().then(() => {
+      const fresh = allContacts.find((c) => c.id === contactId);
+      if (fresh) currentContact = fresh;
+    });
   });
 
   checkSession();

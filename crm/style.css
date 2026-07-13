@@ -163,10 +163,12 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--yellow); bo
   font-weight: 600;
 }
 .status-ny { background: #E8ECEF; color: var(--anthracite); }
-.status-kontaktet { background: #FDF1D2; color: #8A6300; }
-.status-venter_svar { background: #FCE8D6; color: #A05A00; }
-.status-kunde { background: #DDF3E4; color: #1E7A42; }
+.status-epost { background: #FDF1D2; color: #8A6300; }
+.status-telefon { background: #FCE8D6; color: #A05A00; }
+.status-mote { background: #DCEEFB; color: #1C6FA5; }
+.status-annet { background: #E8ECEF; color: var(--anthracite); }
 .status-avslatt { background: #FADBD8; color: var(--danger); }
+.status-svar_fra_kunden { background: #DDF3E4; color: #1E7A42; }
 
 /* Modal */
 .modal-backdrop {
@@ -259,6 +261,9 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--yellow); bo
 .activity-form { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
 .activity-form select, .activity-form input[type="date"] { font-size: 13px; padding: 8px 10px; }
 .activity-form textarea { min-height: 60px; resize: vertical; }
+.activity-attachment-label { font-weight: 400; font-size: 13px; gap: 6px; }
+.activity-attachment-label input[type="file"] { border: none; padding: 0; font-size: 13px; }
+.activity-table a.attachment-link { color: var(--anthracite); font-size: 12px; }
 
 @media (max-width: 560px) {
   .form-row { flex-direction: column; }

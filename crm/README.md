@@ -80,16 +80,20 @@ dodaj subdomenę jako custom domain, dodaj wskazany rekord CNAME w DNS).
 ## Jak to działa na co dzień
 
 - **Logowanie** — e-mail + hasło nadane przez administratora (patrz krok 3).
-- **Lista firm** — szukaj po nazwie/kontakcie/e-mailu, filtruj po statusie (Ny / Kontaktet /
-  Venter på svar / Kunde / Avslått).
+- **Lista firm** — szukaj po nazwie/kontakcie/e-mailu, filtruj po statusie. Status **nie jest
+  osobnym polem** — to po prostu Type (rodzaj) ostatniego wpisu w Historikk danej firmy (Ny, jeśli
+  nie ma jeszcze żadnego wpisu), więc lista i Historikk zawsze pokazują to samo. Kolumna „Endret
+  av" pokazuje, kto dodał ten ostatni wpis w Historikk (to samo co „Kontaktet av" przy nim) —
+  a dla zupełnie nowej firmy bez Historikk, kto ostatnio edytował dane firmy.
 - **Klik na wiersz** — otwiera popup z podsumowaniem firmy (tylko do odczytu): dane kontaktowe,
   osoby kontaktowe i historia (Historikk) jako tabela: Data / Kontaktet av / Med hvem / Type /
-  Kommentar. Na desktopie (≥860px) podsumowanie+historia są w lewej kolumnie, kontaktpersoner w
-  prawej; na telefonie wszystko jest pod sobą.
+  Kommentar / Vedlegg. Na desktopie (≥860px) podsumowanie+historia są w lewej kolumnie,
+  kontaktpersoner w prawej; na telefonie wszystko jest pod sobą.
 - **Ikona ✎ w rogu popupu** — przełącza w tryb edycji: edytowalny formularz firmy (w tym Land i
   Bransje — zaznaczane checkboxami, firma może mieć kilka branż naraz), zarządzanie osobami
   kontaktowymi (dodaj/edytuj/usuń/przenieś do innej firmy) i dodawanie nowych wpisów do Historikk
-  (data, z kim, rodzaj kontaktu — e-post/telefon/møte/annet, komentarz).
+  (data, z kim, Type — e-post/telefon/møte/annet/avslått/svar fra kunden, komentarz, opcjonalne
+  vedlegg np. plik `.msg` z Outlooka).
 - **+ Ny firma** — od razu otwiera pusty formularz edycji (nie ma jeszcze czego podsumowywać).
 - Każda zmiana automatycznie zapisuje, kto i kiedy jej dokonał (widoczne w podsumowaniu firmy oraz
   przy każdym wpisie w Historikk) — ustawia to baza danych (trigger), więc nie da się tego
@@ -109,11 +113,13 @@ zatrudnienia.
 `schema.sql` zawiera **pełny, aktualny schemat** — używaj go tylko przy zakładaniu zupełnie nowego
 projektu Supabase od zera (patrz krok 2 wyżej).
 
-Folder [`supabase/migrations/`](supabase/migrations/) to już zastosowane, historyczne kroki, którymi
-dotychczasowa (żyjąca na `crm.norma-gs.no`) baza doszła do obecnego stanu — nie trzeba ich ponownie
-uruchamiać. Trzymane są jako dokumentacja tego, jak i dlaczego zmieniał się schemat (standardowa
-praktyka przy migracjach bazy danych), na wypadek gdyby trzeba było kiedyś odtworzyć historię zmian
-albo założyć drugie środowisko (np. staging) startujące od starszego stanu:
+Folder [`supabase/migrations/`](supabase/migrations/) to kroki, którymi dotychczasowa (żyjąca na
+`crm.norma-gs.no`) baza doszła/dochodzi do obecnego stanu, trzymane jako dokumentacja tego, jak i
+dlaczego zmieniał się schemat (standardowa praktyka przy migracjach bazy danych), na wypadek gdyby
+trzeba było kiedyś odtworzyć historię zmian albo założyć drugie środowisko (np. staging) startujące
+od starszego stanu. `002`–`009` są już zastosowane na produkcji — nie trzeba ich ponownie
+uruchamiać. `010`–`013` (patrz oznaczenie przy każdej) **jeszcze nie** — uruchom je po kolei w SQL
+Editor:
 
 - `002_contact_people.sql` — dodanie encji „osoba kontaktowa" (zamiast jednego pola tekstowego) oraz
   poprawka 3NF (tabela `profiles` zamiast zdenormalizowanych `*_email` w każdej tabeli).
@@ -144,6 +150,21 @@ albo założyć drugie środowisko (np. staging) startujące od starszego stanu:
   rozpoznał i wstawił dzisiejszą datę. Migracja koryguje datę na 30.11.2020 zamiast usuwać
   wpis (migracja 008 próbowała go usunąć, ale nie pasował do jej warunku — to prawdziwy,
   historyczny kontakt, nie śmieciowe dane). Bezpieczna do ponownego uruchomienia.
+- `010_status_follows_type.sql` — **jeszcze nie uruchomiona, uruchom w SQL Editor.** Status na
+  liście firm przestaje być osobnym, niepowiązanym polem i zaczyna być wyprowadzany z Type ostatniego
+  wpisu w Historikk (zmiana we frontendzie, `app.js`). Dodaje `avslatt` i `svar_fra_kunden` do
+  dozwolonych wartości `contact_type`, usuwa (teraz zbędną i zduplikowaną) kolumnę
+  `contacts.status`.
+- `011_add_romuald_profile.sql` — **jeszcze nie uruchomiona.** Ustawia imię/nazwisko dla nowego
+  użytkownika `romuald@norma-gs.no` (konto dodaj wcześniej w Authentication → Users, jeśli jeszcze
+  nie istnieje).
+- `012_backfill_kontaktet_av.sql` — **jeszcze nie uruchomiona, uruchom PO 011.** Uzupełnia
+  „Kontaktet av" dla wszystkich istniejących wpisów Historikk wg daty: po 01.06.2026 → Joanna,
+  01.02.2026–31.05.2026 → Tomasz, reszta → Romuald.
+- `013_activity_attachments.sql` — **jeszcze nie uruchomiona.** Dodaje tabelę
+  `contact_activity_attachments` (metadane) i prywatny bucket Supabase Storage
+  `activity-attachments` (pliki, np. `.msg` z Outlooka) z regułami dostępu — pobieranie działa
+  przez podpisane URL-e generowane w `app.js`.
 
 ## Dlaczego jest tabela `profiles` (i 3NF)
 

@@ -43,10 +43,12 @@
     <select id="status-filter">
       <option value="">Alle statuser</option>
       <option value="ny">Ny</option>
-      <option value="kontaktet">Kontaktet</option>
-      <option value="venter_svar">Venter på svar</option>
-      <option value="kunde">Kunde</option>
+      <option value="epost">E-post</option>
+      <option value="telefon">Telefon</option>
+      <option value="mote">Møte</option>
+      <option value="annet">Annet</option>
       <option value="avslatt">Avslått</option>
+      <option value="svar_fra_kunden">Svar fra kunden</option>
     </select>
     <button id="new-contact-btn" class="btn-primary">+ Ny firma</button>
   </div>
@@ -60,10 +62,11 @@
           <th>Telefon</th>
           <th>Status</th>
           <th data-sort="last_activity" class="sortable">Sist endret <span class="sort-arrow"></span></th>
+          <th>Endret av</th>
         </tr>
       </thead>
       <tbody id="contacts-tbody">
-        <tr><td colspan="5" class="loading-row">Laster…</td></tr>
+        <tr><td colspan="6" class="loading-row">Laster…</td></tr>
       </tbody>
     </table>
   </div>
@@ -117,15 +120,6 @@
         <label>Bransje
           <span id="f-specialties" class="specialty-checkboxes"></span>
         </label>
-        <label>Status
-          <select id="f-status">
-            <option value="ny">Ny</option>
-            <option value="kontaktet">Kontaktet</option>
-            <option value="venter_svar">Venter på svar</option>
-            <option value="kunde">Kunde</option>
-            <option value="avslatt">Avslått</option>
-          </select>
-        </label>
 
         <div class="modal-actions">
           <button type="button" id="delete-contact-btn" class="btn-danger" hidden>Slett firma</button>
@@ -170,6 +164,7 @@
                 <th>Med hvem</th>
                 <th>Type</th>
                 <th>Kommentar</th>
+                <th>Vedlegg</th>
               </tr>
             </thead>
             <tbody id="activity-tbody"></tbody>
@@ -187,9 +182,14 @@
               <option value="telefon">Telefon</option>
               <option value="mote">Møte</option>
               <option value="annet">Annet</option>
+              <option value="avslatt">Avslått</option>
+              <option value="svar_fra_kunden">Svar fra kunden</option>
             </select>
           </div>
           <textarea id="activity-note" placeholder="Kommentar (f.eks. «ringte, ingen svar» eller «sendt tilbud»)" required></textarea>
+          <label class="activity-attachment-label">Vedlegg (valgfritt, f.eks. .msg fra Outlook)
+            <input type="file" id="activity-attachment-input" multiple>
+          </label>
           <button type="submit" class="btn-primary">+ Legg til</button>
         </form>
       </section>
