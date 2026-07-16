@@ -93,7 +93,9 @@ dodaj subdomenę jako custom domain, dodaj wskazany rekord CNAME w DNS).
   Bransje — zaznaczane checkboxami, firma może mieć kilka branż naraz), zarządzanie osobami
   kontaktowymi (dodaj/edytuj/usuń/przenieś do innej firmy) i dodawanie nowych wpisów do Historikk
   (data, z kim, Type — e-post/telefon/møte/annet/avslått/svar fra kunden, komentarz, opcjonalne
-  vedlegg np. plik `.msg` z Outlooka).
+  vedlegg np. plik `.msg` z Outlooka). Każdy istniejący wpis w Historikk ma tam też ikony ✎/✕ —
+  ✎ wczytuje wpis do formularza poniżej do edycji (przycisk zmienia się na „Lagre endring", z opcją
+  „Avbryt redigering"), ✕ usuwa wpis (po potwierdzeniu, nieodwracalne).
 - **+ Ny firma** — od razu otwiera pusty formularz edycji (nie ma jeszcze czego podsumowywać).
 - Każda zmiana automatycznie zapisuje, kto i kiedy jej dokonał (widoczne w podsumowaniu firmy oraz
   przy każdym wpisie w Historikk) — ustawia to baza danych (trigger), więc nie da się tego
@@ -165,6 +167,10 @@ Editor:
   `contact_activity_attachments` (metadane) i prywatny bucket Supabase Storage
   `activity-attachments` (pliki, np. `.msg` z Outlooka) z regułami dostępu — pobieranie działa
   przez podpisane URL-e generowane w `app.js`.
+- `014_allow_activity_edit.sql` — **jeszcze nie uruchomiona.** Dodaje `updated_at`/`updated_by`
+  do `contact_activities` oraz regułę RLS pozwalającą na `UPDATE` — do tej pory dało się tylko
+  dodawać nowe wpisy Historikk, teraz można też edytować/usuwać istniejące (usuwanie działało już
+  wcześniej w bazie, tylko nie było do tego przycisku w interfejsie).
 
 ## Dlaczego jest tabela `profiles` (i 3NF)
 

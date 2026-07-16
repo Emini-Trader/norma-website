@@ -92,10 +92,13 @@ create table if not exists public.contact_activities (
     check (contact_type in ('epost', 'telefon', 'mote', 'annet', 'avslatt', 'svar_fra_kunden')),
   note text not null,
   created_at timestamptz not null default now(),
-  created_by uuid references public.profiles(id)
+  created_by uuid references public.profiles(id),
+  updated_at timestamptz,
+  updated_by uuid references public.profiles(id)
 );
 
 comment on column public.contact_activities.contact_type is 'epost=E-post, telefon=Telefon, mote=Møte, annet=Annet, avslatt=Avslått, svar_fra_kunden=Svar fra kunden';
+comment on column public.contact_activities.updated_at is 'NULL = aldri redigert etter opprettelse';
 comment on column public.contact_activities.person_id is 'Hvilken kontaktperson (contact_people) kontakten var med - kan være NULL';
 
 create index if not exists contact_activities_contact_id_idx on public.contact_activities(contact_id);
@@ -166,6 +169,13 @@ drop trigger if exists trg_activities_audit on public.contact_activities;
 create trigger trg_activities_audit
   before insert on public.contact_activities
   for each row execute function public.set_activity_audit_fields();
+
+-- Historikk-oppføringer kan også redigeres i etterkant (i motsetning til f.eks. contact_specialties) -
+-- samme audit-funksjon som contacts/contact_people, bevarer created_at/created_by på UPDATE.
+drop trigger if exists trg_activities_audit_update on public.contact_activities;
+create trigger trg_activities_audit_update
+  before update on public.contact_activities
+  for each row execute function public.set_contact_audit_fields();
 
 -- Ta sama (insert-only) funkcja audytowa nadaje się dla contact_specialties
 drop trigger if exists trg_contact_specialties_audit on public.contact_specialties;
@@ -243,6 +253,10 @@ create policy "authenticated can read activities" on public.contact_activities
 drop policy if exists "authenticated can insert activities" on public.contact_activities;
 create policy "authenticated can insert activities" on public.contact_activities
   for insert to authenticated with check (true);
+
+drop policy if exists "authenticated can update activities" on public.contact_activities;
+create policy "authenticated can update activities" on public.contact_activities
+  for update to authenticated using (true) with check (true);
 
 drop policy if exists "authenticated can delete activities" on public.contact_activities;
 create policy "authenticated can delete activities" on public.contact_activities

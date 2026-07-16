@@ -165,6 +165,7 @@
                 <th>Type</th>
                 <th>Kommentar</th>
                 <th>Vedlegg</th>
+                <th></th>
               </tr>
             </thead>
             <tbody id="activity-tbody"></tbody>
@@ -195,7 +196,10 @@
               <input type="file" id="activity-attachment-input" multiple hidden>
             </div>
           </div>
-          <button type="submit" class="btn-primary">+ Legg til</button>
+          <div class="activity-form-actions">
+            <button type="button" id="activity-cancel-edit-btn" class="btn-ghost" hidden>Avbryt redigering</button>
+            <button type="submit" id="activity-submit-btn" class="btn-primary">+ Legg til</button>
+          </div>
         </form>
       </section>
     </div>

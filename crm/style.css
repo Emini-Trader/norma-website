@@ -257,6 +257,9 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--yellow); bo
 }
 .activity-table td { padding: 8px 10px; border-bottom: 1px solid var(--gray-line); vertical-align: top; }
 .activity-table tbody tr:last-child td { border-bottom: none; }
+.activity-table tr.activity-row-editing { background: var(--gray-bg); }
+.activity-table td.activity-actions { white-space: nowrap; text-align: right; }
+.activity-table td.activity-actions .btn-icon { font-size: 15px; padding: 2px 5px; }
 
 .activity-form { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
 .activity-form select, .activity-form input[type="date"] { font-size: 13px; padding: 8px 10px; }
@@ -266,6 +269,7 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--yellow); bo
 .activity-attachment-picker { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .activity-attachment-picker .btn-ghost { border-color: var(--gray-line); padding: 8px 14px; font-size: 13px; }
 .activity-table a.attachment-link { color: var(--anthracite); font-size: 12px; }
+.activity-form-actions { display: flex; justify-content: flex-end; gap: 10px; }
 
 @media (max-width: 560px) {
   .form-row { flex-direction: column; }

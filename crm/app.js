@@ -86,6 +86,8 @@
     activityAttachmentBtn: document.getElementById("activity-attachment-btn"),
     activityAttachmentInput: document.getElementById("activity-attachment-input"),
     activityAttachmentFilenames: document.getElementById("activity-attachment-filenames"),
+    activitySubmitBtn: document.getElementById("activity-submit-btn"),
+    activityCancelEditBtn: document.getElementById("activity-cancel-edit-btn"),
   };
 
   let allContacts = [];
@@ -398,6 +400,7 @@
   function setMode(mode) {
     modalMode = mode;
     const isEdit = mode === "edit";
+    cancelActivityEdit();
     els.viewSummary.hidden = isEdit;
     els.contactForm.hidden = !isEdit;
     els.modalEditBtn.hidden = isEdit || !els.contactId.value;
@@ -710,9 +713,10 @@
 
   let currentActivities = [];
   let currentAttachmentsByActivity = {}; // activity_id -> [{id, file_name, storage_path}, ...]
+  let editingActivityId = null; // id på Historikk-oppføringen som redigeres, eller null (skjemaet legger til ny)
 
   async function loadActivities(contactId) {
-    els.activityTbody.innerHTML = '<tr><td colspan="6">Laster…</td></tr>';
+    els.activityTbody.innerHTML = '<tr><td colspan="7">Laster…</td></tr>';
     const { data, error } = await supabase
       .from("contact_activities")
       .select("*, created_by_profile:profiles!created_by(first_name, email), person:contact_people!person_id(full_name)")
@@ -721,7 +725,7 @@
       .order("created_at", { ascending: false });
 
     if (error) {
-      els.activityTbody.innerHTML = `<tr><td colspan="6">Feil: ${escapeHtml(error.message)}</td></tr>`;
+      els.activityTbody.innerHTML = `<tr><td colspan="7">Feil: ${escapeHtml(error.message)}</td></tr>`;
       return;
     }
     currentActivities = data || [];
@@ -745,25 +749,76 @@
 
   function renderActivities() {
     if (currentActivities.length === 0) {
-      els.activityTbody.innerHTML = '<tr><td colspan="6" class="empty-row">Ingen historikk ennå.</td></tr>';
+      els.activityTbody.innerHTML = '<tr><td colspan="7" class="empty-row">Ingen historikk ennå.</td></tr>';
       return;
     }
+    const isEdit = modalMode === "edit";
     els.activityTbody.innerHTML = currentActivities.map((a) => {
       const attachments = currentAttachmentsByActivity[a.id] || [];
       const attachmentsHtml = attachments.length
         ? attachments.map((att) => `<a href="#" class="attachment-link" data-path="${escapeHtml(att.storage_path)}">${escapeHtml(att.file_name)}</a>`).join("<br>")
         : "—";
+      const actionsHtml = isEdit
+        ? `<button type="button" class="btn-icon btn-edit-activity" data-id="${escapeHtml(a.id)}" title="Rediger">✎</button>
+           <button type="button" class="btn-icon btn-delete-activity" data-id="${escapeHtml(a.id)}" title="Slett">✕</button>`
+        : "";
       return `
-      <tr>
+      <tr class="${a.id === editingActivityId ? "activity-row-editing" : ""}">
         <td>${formatDate(a.occurred_at)}</td>
         <td>${escapeHtml(editorName(a.created_by_profile))}</td>
         <td>${escapeHtml((a.person || {}).full_name)}</td>
         <td>${escapeHtml(CONTACT_TYPE_LABELS[a.contact_type] || a.contact_type)}</td>
         <td>${escapeHtml(a.note)}</td>
         <td>${attachmentsHtml}</td>
+        <td class="activity-actions">${actionsHtml}</td>
       </tr>
     `;
     }).join("");
+  }
+
+  function cancelActivityEdit() {
+    editingActivityId = null;
+    els.activityForm.reset();
+    els.activityDate.value = todayStr();
+    resetAttachmentPicker();
+    els.activitySubmitBtn.textContent = "+ Legg til";
+    els.activityCancelEditBtn.hidden = true;
+  }
+
+  function startActivityEdit(id) {
+    const activity = currentActivities.find((a) => a.id === id);
+    if (!activity) return;
+    editingActivityId = id;
+    els.activityDate.value = activity.occurred_at;
+    els.activityPerson.value = activity.person_id || "";
+    els.activityType.value = activity.contact_type;
+    els.activityNote.value = activity.note;
+    resetAttachmentPicker();
+    els.activitySubmitBtn.textContent = "Lagre endring";
+    els.activityCancelEditBtn.hidden = false;
+    renderActivities();
+    els.activityNote.focus();
+  }
+
+  els.activityCancelEditBtn.addEventListener("click", () => {
+    cancelActivityEdit();
+    renderActivities();
+  });
+
+  async function deleteActivityEntry(id) {
+    if (!confirm("Slette denne oppføringen i Historikk permanent? Dette kan ikke angres.")) return;
+    const { error } = await supabase.from("contact_activities").delete().eq("id", id);
+    if (error) {
+      alert("Feil ved sletting: " + error.message);
+      return;
+    }
+    if (editingActivityId === id) cancelActivityEdit();
+    const contactId = els.contactId.value;
+    loadActivities(contactId);
+    loadContacts().then(() => {
+      const fresh = allContacts.find((c) => c.id === contactId);
+      if (fresh) currentContact = fresh;
+    });
   }
 
   function resetAttachmentPicker() {
@@ -782,15 +837,68 @@
 
   els.activityTbody.addEventListener("click", async (e) => {
     const link = e.target.closest(".attachment-link");
-    if (!link) return;
-    e.preventDefault();
-    const { data, error } = await supabase.storage.from(ATTACHMENT_BUCKET).createSignedUrl(link.dataset.path, 60);
-    if (error) {
-      alert("Feil ved henting av vedlegg: " + error.message);
+    if (link) {
+      e.preventDefault();
+      const { data, error } = await supabase.storage.from(ATTACHMENT_BUCKET).createSignedUrl(link.dataset.path, 60);
+      if (error) {
+        alert("Feil ved henting av vedlegg: " + error.message);
+        return;
+      }
+      window.open(data.signedUrl, "_blank", "noopener");
       return;
     }
-    window.open(data.signedUrl, "_blank", "noopener");
+    const editBtn = e.target.closest(".btn-edit-activity");
+    if (editBtn) {
+      startActivityEdit(editBtn.dataset.id);
+      return;
+    }
+    const deleteBtn = e.target.closest(".btn-delete-activity");
+    if (deleteBtn) {
+      deleteActivityEntry(deleteBtn.dataset.id);
+      return;
+    }
   });
+
+  // Filnavn kan inneholde tegn (mellomrom, æøå, &, # osv.) som ikke er trygge i en Storage-nøkkel -
+  // selve visningsnavnet (file_name) beholder originalen, kun lagringsstien saniteres.
+  function sanitizeStorageFilename(name) {
+    return name.normalize("NFKD").replace(/[^\w.-]+/g, "_");
+  }
+
+  function makeAttachmentId() {
+    if (window.crypto && typeof window.crypto.randomUUID === "function") {
+      return window.crypto.randomUUID();
+    }
+    return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  }
+
+  async function uploadActivityAttachments(activityId) {
+    const files = Array.from(els.activityAttachmentInput.files || []);
+    for (const file of files) {
+      try {
+        const path = `${activityId}/${makeAttachmentId()}-${sanitizeStorageFilename(file.name)}`;
+        const { error: uploadError } = await supabase.storage
+          .from(ATTACHMENT_BUCKET)
+          .upload(path, file, { contentType: file.type || "application/octet-stream" });
+        if (uploadError) {
+          alert(`Feil ved opplasting av vedlegg «${file.name}»: ${uploadError.message}`);
+          continue;
+        }
+        const { error: attachError } = await supabase.from("contact_activity_attachments").insert({
+          activity_id: activityId,
+          file_name: file.name,
+          storage_path: path,
+          content_type: file.type || null,
+          size_bytes: file.size,
+        });
+        if (attachError) {
+          alert(`Filen «${file.name}» ble lastet opp, men kunne ikke lagres i Historikk: ${attachError.message}`);
+        }
+      } catch (err) {
+        alert(`Uventet feil ved opplasting av vedlegg «${file.name}»: ${(err && err.message) || err}`);
+      }
+    }
+  }
 
   els.activityForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -798,43 +906,36 @@
     const note = els.activityNote.value.trim();
     if (!contactId || !note) return;
 
-    const { data: inserted, error } = await supabase
-      .from("contact_activities")
-      .insert({
-        contact_id: contactId,
-        occurred_at: els.activityDate.value || todayStr(),
-        person_id: els.activityPerson.value || null,
-        contact_type: els.activityType.value,
-        note,
-      })
-      .select("id")
-      .single();
-    if (error) {
-      alert("Feil ved lagring av notat: " + error.message);
-      return;
-    }
+    const payload = {
+      occurred_at: els.activityDate.value || todayStr(),
+      person_id: els.activityPerson.value || null,
+      contact_type: els.activityType.value,
+      note,
+    };
 
-    const files = Array.from(els.activityAttachmentInput.files || []);
-    for (const file of files) {
-      const path = `${inserted.id}/${crypto.randomUUID()}-${file.name}`;
-      const { error: uploadError } = await supabase.storage.from(ATTACHMENT_BUCKET).upload(path, file);
-      if (uploadError) {
-        alert(`Feil ved opplasting av vedlegg «${file.name}»: ${uploadError.message}`);
-        continue;
+    let activityId = editingActivityId;
+    if (activityId) {
+      const { error } = await supabase.from("contact_activities").update(payload).eq("id", activityId);
+      if (error) {
+        alert("Feil ved lagring av endring: " + error.message);
+        return;
       }
-      await supabase.from("contact_activity_attachments").insert({
-        activity_id: inserted.id,
-        file_name: file.name,
-        storage_path: path,
-        content_type: file.type || null,
-        size_bytes: file.size,
-      });
+    } else {
+      const { data: inserted, error } = await supabase
+        .from("contact_activities")
+        .insert({ contact_id: contactId, ...payload })
+        .select("id")
+        .single();
+      if (error) {
+        alert("Feil ved lagring av notat: " + error.message);
+        return;
+      }
+      activityId = inserted.id;
     }
 
-    els.activityNote.value = "";
-    els.activityDate.value = todayStr();
-    els.activityPerson.value = "";
-    resetAttachmentPicker();
+    await uploadActivityAttachments(activityId);
+
+    cancelActivityEdit();
     loadActivities(contactId);
     loadContacts().then(() => {
       const fresh = allContacts.find((c) => c.id === contactId);
