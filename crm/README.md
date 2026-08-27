@@ -171,6 +171,14 @@ Editor:
   do `contact_activities` oraz regułę RLS pozwalającą na `UPDATE` — do tej pory dało się tylko
   dodawać nowe wpisy Historikk, teraz można też edytować/usuwać istniejące (usuwanie działało już
   wcześniej w bazie, tylko nie było do tego przycisku w interfejsie).
+- `015_missing_companies_from_customer_base.sql` — **jeszcze nie uruchomiona.** Dogrywa 13 firm z
+  `Kopi_av_Company_customer_base.xlsx` (Ark1), które zostały pominięte przy pierwotnym imporcie w
+  migracji 006 (potwierdzono, że to ten sam plik źródłowy — te same literówki w danych i te same
+  84 firmy w arkuszu): Eiqon, Sapinor, Acciona, Peab, AF Gruppen, J.I.Bygg AS, Betonmast Romerike
+  AS, Furulund-Maskin, Oslo Byggentreprenør AS, Ingeniørfirma Big AS, Dala Infra Group AB,
+  STØ Entreprenør, MA Totalbygg — z pełnymi osobami kontaktowymi, historią Historikk i branżami
+  (dodaje też nową branżę „Landmåling"). Bezpieczna do ponownego uruchomienia (NOT EXISTS jak w
+  migracji 006), przetestowana lokalnie na kopii `schema.sql` przed wdrożeniem.
 
 ## Dlaczego jest tabela `profiles` (i 3NF)
 
